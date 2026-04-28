@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import Header from "@/components/Header/Header";
-import "../styles/globals.css"
+import "../styles/globals.css";
 import { firaCode, inter } from "@/styles/fonts";
 
 export const metadata: Metadata = {
@@ -21,12 +20,7 @@ export default function RootLayout({
       </head>
 
       <body className={`${inter.variable} ${firaCode.variable}`}>
-      <Header 
-        clientName={userName} 
-      />
-        <div className="containerClient"> 
-          {children} 
-        </div>
+        <div className="containerClient">{children}</div>
       </body>
     </html>
   );
