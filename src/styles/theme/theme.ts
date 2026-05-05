@@ -14,11 +14,11 @@ const theme: ThemeConfig = {
   components: {
     Menu: {
       itemBg: "transparent",
-      itemColor: "var(--cinza)",
-      itemSelectedBg: "var(--lavanda)",
-      itemSelectedColor: "var(--azul)",
+      itemColor: "var(--foreground)",
+      itemSelectedBg: "var(--azul)",
+      itemSelectedColor: "var(--branco)",
       itemHoverBg: "var(--lavanda)",
-      itemHoverColor: "var(--azul)",
+      itemHoverColor: "var(--branco)",
       iconSize: 20,
       collapsedIconSize: 16,
       collapsedWidth: 50,
@@ -34,7 +34,7 @@ const theme: ThemeConfig = {
       rowHoverBg: "var(--background)",
     },
     Pagination: {
-      itemActiveBg: "var(--lavanda)",
+      itemActiveBg: "var(--background)",
       itemActiveColor: "var(--azul)",
       itemBg: "transparent",
     },
@@ -42,6 +42,8 @@ const theme: ThemeConfig = {
       defaultBg: "var(--azul)",
       defaultColor: "var(--branco)",
       defaultHoverBg: "var(--lavanda)",
+      defaultHoverColor: "var(--branco)",
+      defaultHoverBorderColor: "var(--azul)",
       primaryColor: "var(--branco)",
     },
     Modal: {
