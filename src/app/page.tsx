@@ -5,18 +5,28 @@ import GraficoDonuts from "@/components/graficos/donuts";
 import GraficoLinhasBarras, {
   ChartConfig,
 } from "@/components/graficos/linhas_barras";
-import ModalEntrada from "@/components/modals/modal_entrada";
+import ModalTransacao from "@/components/modals/modal_transacao";
 import Tabela from "@/components/tabela";
+import { colunasTransacao, dataMock } from "@/utils/tabela_transacao";
 import { BankOutlined, FallOutlined, RiseOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import { useState } from "react";
 
 export default function Home() {
-  const [entradaOpen, setEntradaOpen] = useState(false);
-  const [saidaOpen, setSaidaOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleEntradaOpen = () => {
-    setEntradaOpen(!entradaOpen);
+  const [tipoTransacao, setTipoTransacao] = useState<"entrada" | "saida">(
+    "entrada",
+  );
+
+  const handlemodalOpen = () => {
+    setModalOpen(!modalOpen);
+    setTipoTransacao("entrada");
+  };
+
+  const handleSaidaOpen = () => {
+    setModalOpen(!modalOpen);
+    setTipoTransacao("saida");
   };
 
   const mockData = [
@@ -48,105 +58,9 @@ export default function Home() {
   ];
 
   const stats = [
-    { name: "Nubank", value: 400 },
-    { name: "Inter", value: 300 },
-    { name: "Dinheiro", value: 100 },
-  ];
-
-  const columns = [
-    {
-      title: "Data",
-      dataIndex: "data",
-      key: "data",
-    },
-    {
-      title: "Categoria",
-      dataIndex: "categoria",
-      key: "categoria",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Valor",
-      dataIndex: "valor",
-      key: "valor",
-    },
-  ];
-
-  const data = [
-    {
-      key: "1",
-      data: "01/05/2026",
-      categoria: "Alimentação",
-      status: "Pago",
-      valor: "R$ 85,50",
-    },
-    {
-      key: "2",
-      data: "02/05/2026",
-      categoria: "Transporte",
-      status: "Pendente",
-      valor: "R$ 42,00",
-    },
-    {
-      key: "3",
-      data: "05/05/2026",
-      categoria: "Assinaturas",
-      status: "Pago",
-      valor: "R$ 39,90",
-    },
-    {
-      key: "4",
-      data: "10/05/2026",
-      categoria: "Lazer",
-      status: "Cancelado",
-      valor: "R$ 150,00",
-    },
-    {
-      key: "5",
-      data: "12/05/2026",
-      categoria: "Educação",
-      status: "Pago",
-      valor: "R$ 450,00",
-    },
-    {
-      key: "6",
-      data: "15/05/2026",
-      categoria: "Saúde",
-      status: "Pago",
-      valor: "R$ 120,00",
-    },
-    {
-      key: "7",
-      data: "18/05/2026",
-      categoria: "Moradia",
-      status: "Pendente",
-      valor: "R$ 1.200,00",
-    },
-    {
-      key: "8",
-      data: "20/05/2026",
-      categoria: "Supermercado",
-      status: "Pago",
-      valor: "R$ 325,15",
-    },
-    {
-      key: "9",
-      data: "22/05/2026",
-      categoria: "Vestuário",
-      status: "Pago",
-      valor: "R$ 89,90",
-    },
-    {
-      key: "10",
-      data: "25/05/2026",
-      categoria: "Investimentos",
-      status: "Pendente",
-      valor: "R$ 500,00",
-    },
+    { name: "Alimentação", value: 400 },
+    { name: "Jogos", value: 300 },
+    { name: "Luz", value: 100 },
   ];
 
   return (
@@ -156,18 +70,25 @@ export default function Home() {
           <Card
             icone={<BankOutlined />}
             descricao="Saldo Total"
-            valor="fi8943y8943"
+            valor="R$ 4.000,00"
             backgroundColor="azul"
             color="cinza "
             footer={
               <div className="flex flex-col md:flex-row gap-2">
-                <Button className="w-full" onClick={handleEntradaOpen}>
-                  Nova Entrada
+                <Button
+                  className="w-full"
+                  onClick={handlemodalOpen}
+                  style={{
+                    backgroundColor: "var(--branco)",
+                    color: "var(--azul)",
+                  }}
+                >
+                  Nova Receita
                 </Button>
                 <Button
                   variant="outlined"
                   className="w-full"
-                  onClick={handleEntradaOpen}
+                  onClick={handleSaidaOpen}
                 >
                   Nova Saída
                 </Button>
@@ -176,15 +97,15 @@ export default function Home() {
           />
           <Card
             icone={<RiseOutlined />}
-            descricao="Renda Mensal"
-            valor="fi8943y8943"
+            descricao="Receita Mensal"
+            valor="R$ 5.000,00"
             backgroundColor="verde"
             color="branco"
           />
           <Card
             icone={<FallOutlined />}
-            descricao="Desepesas Mensais"
-            valor="fi8943y8943"
+            descricao="Desepesa Mensal"
+            valor="R$ 1.000,00"
             backgroundColor="rosa"
             color="branco"
           />
@@ -205,15 +126,16 @@ export default function Home() {
         </section>
         <Tabela
           titulo="Transações Recentes"
-          columns={columns}
-          dataSource={data}
-          pagination={false}
+          columns={colunasTransacao}
+          dataSource={dataMock}
         />
       </div>
-      <ModalEntrada
-        isModalOpen={entradaOpen}
+      <ModalTransacao
+        isModalOpen={modalOpen}
         handleOk={() => {}}
-        handleCancel={handleEntradaOpen}
+        handleCancel={handlemodalOpen}
+        tipo={"novo"}
+        tipoTransacao={tipoTransacao}
       />
     </>
   );
