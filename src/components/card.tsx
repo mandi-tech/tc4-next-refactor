@@ -13,19 +13,17 @@ function getContrastColor(hexColor: string) {
 }
 
 export default function Card(props: iCardProps) {
-  const textColor = getContrastColor(props.backgroundColor || "var(--cinza )");
-
   return (
     <div
       className={`
-        flex flex-col gap-4 rounded-2xl bg-gradient-to-br from-${props.backgroundColor} to-${props.backgroundColor}/80 p-6 text-white shadow-lg text-${props.color}
+        flex flex-col gap-4 rounded-2xl p-6 text-white shadow-lg text-${props.color}
     `}
       style={{
         border: props.border ? `1px solid var(--${props.border})` : "none",
         color: props.color ? `var(--${props.color})` : "var(--cinza )",
         backgroundColor: props.backgroundColor
           ? `var(--${props.backgroundColor})`
-          : "var(--cinza )",
+          : "var(--cinza)",
       }}
     >
       <span

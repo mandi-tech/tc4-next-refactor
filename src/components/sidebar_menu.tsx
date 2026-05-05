@@ -1,54 +1,52 @@
 "use client";
 
 import {
-  AppstoreOutlined,
   BarChartOutlined,
-  ContainerOutlined,
-  DesktopOutlined,
   FileTextOutlined,
-  MailOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  PieChartOutlined,
 } from "@ant-design/icons";
 import { Button, Menu, MenuProps } from "antd";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
 const items: MenuItem[] = [
   {
-    key: "1",
+    key: "/", // A key deve ser igual à rota para facilitar o "active"
     icon: <BarChartOutlined />,
-    label: <a className="text-md leading-none font-semibold">Dashboard</a>,
+    label: <Link href="/">Dashboard</Link>,
   },
   {
-    key: "2",
+    key: "/extrato",
     icon: <FileTextOutlined />,
-    label: <a className="text-md leading-none font-semibold">Extrato</a>,
+    label: <Link href="/extrato">Extrato</Link>,
   },
 ];
 
 export default function SidebarMenu() {
   const [collapsed, setCollapsed] = useState(false);
+  const pathname = usePathname();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
   return (
     <div className="h-[100vh] bg-secondary-background px-2 shadow-xl">
-      <Button
-        type="primary"
-        onClick={toggleCollapsed}
-        style={{ marginBottom: 16 }}
-      >
-        {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      </Button>
+      <div className="py-4 flex">
+        <Button type="primary" onClick={toggleCollapsed} className="mb-4">
+          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </Button>
+      </div>
+
       <Menu
-        defaultSelectedKeys={["1"]}
+        selectedKeys={[pathname]}
         mode="inline"
         inlineCollapsed={collapsed}
         items={items}
+        className="border-none bg-transparent"
       />
     </div>
   );
