@@ -34,13 +34,15 @@ export default function SidebarMenu() {
     setCollapsed(!collapsed);
   };
   return (
-    <div className="h-[100vh] bg-secondary-background px-2 shadow-xl">
+    <div
+      className={`h-screen bg-secondaryBackground px-2 shadow-xl transition-colors duration-300 ${collapsed ? "w-[80px]" : "w-[250px]"}`}
+    >
+      {" "}
       <div className="py-4 flex">
         <Button type="primary" onClick={toggleCollapsed} className="mb-4">
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </Button>
       </div>
-
       <Menu
         selectedKeys={[pathname]}
         mode="inline"

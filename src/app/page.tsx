@@ -5,30 +5,11 @@ import GraficoDonuts from "@/components/graficos/donuts";
 import GraficoLinhasBarras, {
   ChartConfig,
 } from "@/components/graficos/linhas_barras";
-import ModalTransacao from "@/components/modals/modal_transacao";
 import Tabela from "@/components/tabela";
 import { colunasTransacao, dataMock } from "@/utils/tabela_transacao";
 import { BankOutlined, FallOutlined, RiseOutlined } from "@ant-design/icons";
-import { Button } from "antd";
-import { useState } from "react";
 
 export default function Home() {
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const [tipoTransacao, setTipoTransacao] = useState<"entrada" | "saida">(
-    "entrada",
-  );
-
-  const handlemodalOpen = () => {
-    setModalOpen(!modalOpen);
-    setTipoTransacao("entrada");
-  };
-
-  const handleSaidaOpen = () => {
-    setModalOpen(!modalOpen);
-    setTipoTransacao("saida");
-  };
-
   const mockData = [
     { mes: "Jan", renda: 4000, saldo: 2400, gastos: 150 },
     { mes: "Fev", renda: 3000, saldo: 1398, gastos: 340 },
@@ -72,28 +53,7 @@ export default function Home() {
             descricao="Saldo Total"
             valor="R$ 4.000,00"
             backgroundColor="azul"
-            color="cinza "
-            footer={
-              <div className="flex flex-col md:flex-row gap-2">
-                <Button
-                  className="w-full"
-                  onClick={handlemodalOpen}
-                  style={{
-                    backgroundColor: "var(--branco)",
-                    color: "var(--azul)",
-                  }}
-                >
-                  Nova Receita
-                </Button>
-                <Button
-                  variant="outlined"
-                  className="w-full"
-                  onClick={handleSaidaOpen}
-                >
-                  Nova Saída
-                </Button>
-              </div>
-            }
+            color="cinza"
           />
           <Card
             icone={<RiseOutlined />}
@@ -130,13 +90,6 @@ export default function Home() {
           dataSource={dataMock}
         />
       </div>
-      <ModalTransacao
-        isModalOpen={modalOpen}
-        handleOk={() => {}}
-        handleCancel={handlemodalOpen}
-        tipo={"novo"}
-        tipoTransacao={tipoTransacao}
-      />
     </>
   );
 }

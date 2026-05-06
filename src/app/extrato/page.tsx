@@ -10,19 +10,18 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Input, Radio } from "antd";
 
 export default function ExtratoPage() {
-  const listaCategorias = [...tipoEntrada, ...tipoSaida].map((item) => ({
-    label: item.tipo,
-    value: item.tipo,
-  }));
+  const listaCategorias = Array.from(
+    new Map(
+      [...tipoEntrada, ...tipoSaida].map((item) => [
+        item.tipo,
+        { label: item.tipo, value: item.key },
+      ]),
+    ).values(),
+  );
   return (
     <div>
       <section className="flex flex-col gap-2 w-full mb-4">
-        <InputTexto
-          size="large"
-          placeholder="Busca por descrição"
-          prefixo={<SearchOutlined />}
-        />
-        <div className="flex gap-2 w-full items-center">
+        <div className="flex justify-end gap-3 w-full items-center">
           <Radio.Group buttonStyle="solid">
             <Radio.Button value="a">Entrada</Radio.Button>
             <Radio.Button value="b">Saída</Radio.Button>
@@ -31,7 +30,7 @@ export default function ExtratoPage() {
           <RangeDateInput />
         </div>
       </section>
-      <Tabela titulo="Extrato" columns={colunasExtrato} dataSource={dataMock} />
+      <Tabela columns={colunasExtrato} dataSource={dataMock} />
     </div>
   );
 }

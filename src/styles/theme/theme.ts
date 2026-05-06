@@ -1,12 +1,15 @@
 import type { ThemeConfig } from "antd";
+import { theme as antdTheme } from "antd"; // Importamos para usar os algoritmos
+import { cores } from "./cores";
 
 const theme: ThemeConfig = {
+  cssVar: { prefix: "meu-app" },
+  algorithm: antdTheme.defaultAlgorithm,
+
   token: {
-    colorPrimary: "var(--azul)",
-    colorInfo: "var(--azul)",
-    colorSuccess: "var(--verde)",
-    colorWarning: "var(--laranja)",
-    colorError: "var(--vermelho)",
+    colorPrimary: cores.azul,
+    colorSuccess: cores.verde,
+    colorError: cores.vermelho,
 
     fontFamily: "var(--font-manrope)",
     borderRadius: 8,
@@ -14,41 +17,66 @@ const theme: ThemeConfig = {
   components: {
     Menu: {
       itemBg: "transparent",
-      itemColor: "var(--foreground)",
-      itemSelectedBg: "var(--azul)",
-      itemSelectedColor: "var(--branco)",
-      itemHoverBg: "var(--lavanda)",
-      itemHoverColor: "var(--branco)",
+      itemColor: cores.foreground,
+      itemSelectedBg: cores.azul,
+      itemSelectedColor: cores.branco,
+      itemHoverBg: cores.lavanda,
+      itemHoverColor: cores.branco,
       iconSize: 20,
       collapsedIconSize: 16,
       collapsedWidth: 50,
       itemPaddingInline: 100,
+      boxShadow: "none",
     },
     Table: {
-      borderColor: "var(--border)",
-      headerBg: "var(--azul)",
-      headerColor: "var(--branco)",
+      borderColor: cores.border,
+      headerBg: cores.azul,
+      headerColor: cores.branco,
       headerSplitColor: "transparent",
-      colorBgContainer: "var(--secondary-background)",
-      colorText: "var(--secondary-foreground)",
-      rowHoverBg: "var(--background)",
+      colorBgContainer: cores.secondaryBackground,
+      colorText: cores.secondaryForeground,
+      rowHoverBg: cores.background,
+      footerBg: cores.secondaryBackground,
     },
     Pagination: {
-      itemActiveBg: "var(--background)",
-      itemActiveColor: "var(--azul)",
+      itemActiveBg: cores.background,
+      itemActiveColor: cores.azul,
       itemBg: "transparent",
     },
     Button: {
-      defaultBg: "var(--azul)",
-      defaultColor: "var(--branco)",
-      defaultHoverBg: "var(--lavanda)",
-      defaultHoverColor: "var(--branco)",
-      defaultHoverBorderColor: "var(--azul)",
-      primaryColor: "var(--branco)",
+      defaultHoverBg: cores.lavanda,
+      defaultHoverColor: cores.branco,
+      defaultHoverBorderColor: cores.azul,
+      primaryColor: cores.branco,
+      colorBorder: cores.lavanda,
     },
     Modal: {
-      contentBg: "var(--secondary-background)",
-      titleColor: "var(--secondary-foreground)",
+      contentBg: cores.secondaryBackground,
+      titleColor: cores.secondaryForeground,
+    },
+    Radio: {
+      buttonBg: cores.secondaryBackground,
+      buttonCheckedBg: cores.lavanda,
+      colorBorder: cores.border,
+    },
+    Upload: {
+      colorBorder: cores.border,
+    },
+    Input: {
+      colorBorder: cores.border,
+      colorErrorBorder: cores.vermelho,
+      colorErrorBg: cores.background,
+    },
+    Select: {
+      colorBorder: cores.border,
+      colorErrorBorder: cores.vermelho,
+      colorErrorBg: cores.background,
+    },
+    DatePicker: {
+      colorBorder: cores.border,
+      colorErrorBorder: cores.vermelho,
+      colorErrorBg: cores.background,
+      colorTextPlaceholder: cores.secondaryForeground,
     },
   },
 };

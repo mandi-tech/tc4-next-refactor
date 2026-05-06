@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import { manrope } from "@/styles/fonts";
 import SidebarMenu from "@/components/sidebar_menu";
-import { ConfigProvider } from "antd";
-import theme from "@/styles/theme/theme";
 import Topbar from "@/components/topbar";
+import Providers from "@/components/provider";
 
 export const metadata: Metadata = {
   title: "Bytebank",
@@ -16,24 +15,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userName = "Joana da Silva Oliveira";
   return (
-    <html lang="pt-br">
+    <html lang="pt-br" className={`${manrope.variable}`}>
       <head>
         <link rel="icon" href="./icon.svg" type="image/svg" />
       </head>
-
-      <body className={`${manrope.variable}`}>
-        <ConfigProvider theme={theme}>
-          <div className="flex flex-column">
+      <body className="antialiased">
+        <Providers>
+          <div className="flex">
             <SidebarMenu />
-
-            <main className="flex flex-col px-10 py-4 w-full h-[100vh] overflow-y-auto">
+            <main className="flex flex-col px-10 py-4 w-full h-screen overflow-y-auto">
               <Topbar />
               {children}
             </main>
           </div>
-        </ConfigProvider>
+        </Providers>
       </body>
     </html>
   );

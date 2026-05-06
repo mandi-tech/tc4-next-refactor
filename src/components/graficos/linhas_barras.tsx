@@ -38,9 +38,11 @@ export default function GraficoLinhasBarras({
 }: CustomChartProps) {
   return (
     <div
-      className={`${className} w-full bg-secondary-background shadow-sm p-4 rounded-xl p-5  border-border  border`}
+      className={`${className} w-full bg-secondaryBackground  shadow-sm p-4 rounded-xl p-5  border-border  border`}
     >
-      <h2 className="text-xl font-semibold text-foreground mb-4">{titulo}</h2>
+      <h2 className="text-xl font-semibold text-secondaryForeground mb-4">
+        {titulo}
+      </h2>
       <ResponsiveContainer width="100%" height={300}>
         <ComposedChart data={data}>
           <CartesianGrid

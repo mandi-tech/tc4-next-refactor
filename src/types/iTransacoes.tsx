@@ -15,7 +15,7 @@ import {
 export const statusTransacao = [
   {
     label: "Pago",
-    color: "border-azul text-azul bg-azul/30",
+    color: "border-azul text-azul bg-azul/20",
   },
   {
     label: "Pendente",
@@ -23,32 +23,38 @@ export const statusTransacao = [
   },
   {
     label: "Recebido",
-    color: "border-verde text-verde bg-verde/30",
+    color: "border-verde text-verde bg-verde/20",
   },
 ];
 
 export const tipoEntrada = [
   {
+    key: "entrada-salario",
     tipo: "Salário",
     icone: <DollarOutlined />,
   },
   {
+    key: "entrada-freelance",
     tipo: "Freelance",
     icone: <LaptopOutlined />,
   },
   {
+    key: "entrada-investimentos",
     tipo: "Investimentos",
     icone: <RiseOutlined />,
   },
   {
+    key: "entrada-presente",
     tipo: "Presente",
     icone: <GiftOutlined />,
   },
   {
+    key: "entrada-reembolso",
     tipo: "Reembolso",
     icone: <FileSyncOutlined />,
   },
   {
+    key: "entrada-outros",
     tipo: "Outros",
     icone: <AppstoreOutlined />,
   },
@@ -56,26 +62,32 @@ export const tipoEntrada = [
 
 export const tipoSaida = [
   {
+    key: "saida-educacao",
     tipo: "Educação",
     icone: <ReadOutlined />,
   },
   {
+    key: "saida-alimentacao",
     tipo: "Alimentação",
     icone: <ShoppingCartOutlined />,
   },
   {
+    key: "saida-saude",
     tipo: "Saúde",
     icone: <MedicineBoxOutlined />,
   },
   {
+    key: "saida-entretenimento",
     tipo: "Entretenimento",
     icone: <SmileOutlined />,
   },
   {
+    key: "saida-contas",
     tipo: "Contas",
     icone: <HomeOutlined />,
   },
   {
+    key: "saida-outros",
     tipo: "Outros",
     icone: <AppstoreOutlined />,
   },

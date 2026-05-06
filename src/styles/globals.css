@@ -1,6 +1,7 @@
 @import "tailwindcss";
+@config "../../tailwind.config.js";
 
-@theme {
+/* @theme {
   --color-laranja: var(--laranja);
   --color-azul: var(--azul);
   --color-verde: var(--verde);
@@ -19,9 +20,9 @@
   --color-secondary-background: var(--secondary-background);
   --color-foreground: var(--foreground);
   --color-secondary-foreground: var(--secondary-foreground);
-}
+} */
 
-:root {
+/* :root {
   --laranja: #e88e3d;
   --azul: #4d33cc;
   --verde: #2eb88a;
@@ -42,16 +43,14 @@
   --secondary-foreground: #1d2030;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--preto);
-    --secondary-background: #1d2030;
-    --foreground: var(--cinza);
-    --secondary-foreground: var(--branco);
+.dark {
+  --background: var(--preto);
+  --secondary-background: #1d2030;
+  --foreground: var(--cinza);
+  --secondary-foreground: var(--branco);
 
-    --border: #3a3850;
-  }
-}
+  --border: #3a3850;
+} */
 
 body {
   background-color: var(--background);

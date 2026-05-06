@@ -51,21 +51,21 @@ export const colunasTransacao = [
 export const colunasExtrato = [
   ...colunasTransacao,
   {
-    title: "dg",
+    title: "",
     dataIndex: "categoria",
     key: "categoria",
-    render: (_, record: iTransacao) => {
+    render: (_: any, record: iTransacao) => {
       return (
         <div className="flex gap-2">
           <Button
             onClick={() => console.log("Deletar", record)}
-            style={{ background: "var(--azul)" }}
+            className="!bg-azul !text-branco"
           >
             <EditOutlined />
           </Button>
           <Button
             onClick={() => console.log("Deletar", record)}
-            style={{ background: "var(--vermelho)" }}
+            className="!bg-vermelho !text-branco border !border-vermelho"
           >
             <DeleteOutlined />
           </Button>

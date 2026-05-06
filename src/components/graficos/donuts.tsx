@@ -29,9 +29,11 @@ export default function GraficoDonuts({
 }: DonutChartProps) {
   return (
     <div
-      className={`${className} w-full h-[400px] p-4 bg-secondary-background rounded-xl border-border shadow-sm border`}
+      className={`${className} w-full h-[400px] p-4 bg-secondaryBackground  rounded-xl border-border shadow-sm border`}
     >
-      <h2 className="text-xl font-semibold text-foreground mb-4">{titulo}</h2>
+      <h2 className="text-xl font-semibold text-secondaryForeground mb-4">
+        {titulo}
+      </h2>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie

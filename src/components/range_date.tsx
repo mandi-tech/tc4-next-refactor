@@ -14,6 +14,7 @@ export default function RangeDateInput(props: iDateInput) {
         format="DD/MM/YYYY"
         minDate={props.minDate ? dayjs(props.minDate) : undefined}
         maxDate={props.maxDate ? dayjs(props.maxDate) : undefined}
+        placeholder={["Data início", "Data fim"]}
       />
     </div>
   );
