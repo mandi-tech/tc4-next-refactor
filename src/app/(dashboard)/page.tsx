@@ -1,13 +1,21 @@
 "use client";
 
-import Card from "@/components/card";
-import GraficoDonuts from "@/components/graficos/donuts";
+import Filtros from "@/components/features/filtros/filtros";
+import Card from "@/components/ui/card";
+import GraficoDonuts from "@/components/ui/graficos/donuts";
 import GraficoLinhasBarras, {
   ChartConfig,
-} from "@/components/graficos/linhas_barras";
-import Tabela from "@/components/tabela";
-import { colunasTransacao, dataMock } from "@/utils/tabela_transacao";
-import { BankOutlined, FallOutlined, RiseOutlined } from "@ant-design/icons";
+} from "@/components/ui/graficos/linhas_barras";
+import Tabela from "@/components/ui/tabela";
+import { colunasTransacao, dataMock } from "@/libs/utils/tabela_transacao";
+import {
+  ArrowRightOutlined,
+  BankOutlined,
+  FallOutlined,
+  RiseOutlined,
+} from "@ant-design/icons";
+import { Table } from "antd";
+import Link from "next/link";
 
 export default function Home() {
   const mockData = [
@@ -47,6 +55,7 @@ export default function Home() {
   return (
     <>
       <div className="flex flex-col gap-8">
+        <Filtros filtros={["periodo"]} />
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
           <Card
             icone={<BankOutlined />}
@@ -84,11 +93,27 @@ export default function Home() {
             titulo="Distribuição de Gastos"
           />
         </section>
-        <Tabela
-          titulo="Transações Recentes"
-          columns={colunasTransacao}
-          dataSource={dataMock}
-        />
+        <div>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-semibold text-secondaryForeground">
+              Transações Recentes
+            </h3>
+            <Link
+              href={"/extrato"}
+              className="text-lavanda text-md font-semibold flex gap-2 items-center"
+            >
+              Visualizar extrato
+              <ArrowRightOutlined />
+            </Link>
+          </div>
+
+          <Table
+            columns={colunasTransacao}
+            dataSource={dataMock}
+            pagination={false}
+            rowKey="id"
+          />
+        </div>
       </div>
     </>
   );

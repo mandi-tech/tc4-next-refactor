@@ -1,4 +1,4 @@
-import { iCardProps } from "@/types/iCards";
+import { iCardProps } from "@/libs/types/iCards";
 
 function getContrastColor(hexColor: string) {
   if (!hexColor) return "var(--preto)";

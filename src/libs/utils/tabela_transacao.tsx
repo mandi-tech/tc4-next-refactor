@@ -1,6 +1,11 @@
-import { iTransacao, statusTransacao } from "@/types/iTransacoes";
+import { iTransacao, statusTransacao } from "@/libs/types/iTransacoes";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Popconfirm } from "antd";
+
+interface AcoesProps {
+  onEdit: (record: iTransacao) => void;
+  onDelete: (id: string) => void;
+}
 
 export const colunasTransacao = [
   {
@@ -48,102 +53,62 @@ export const colunasTransacao = [
   },
 ];
 
-export const colunasExtrato = [
+export const getColunasExtrato = ({ onEdit, onDelete }: AcoesProps) => [
   ...colunasTransacao,
   {
-    title: "",
-    dataIndex: "categoria",
-    key: "categoria",
+    title: "Ações",
+    key: "acoes",
     render: (_: any, record: iTransacao) => {
       return (
         <div className="flex gap-2">
           <Button
-            onClick={() => console.log("Deletar", record)}
+            onClick={() => onEdit(record)} // Passa o objeto completo
             className="!bg-azul !text-branco"
+            icon={<EditOutlined />}
+          />
+          <Popconfirm
+            title="Deseja excluir a transação?"
+            onConfirm={() => onDelete(record.id)} // Passa apenas o ID
+            okText="Sim"
+            cancelText="Não"
           >
-            <EditOutlined />
-          </Button>
-          <Button
-            onClick={() => console.log("Deletar", record)}
-            className="!bg-vermelho !text-branco border !border-vermelho"
-          >
-            <DeleteOutlined />
-          </Button>
+            <Button
+              className="!bg-vermelho !text-branco border !border-vermelho"
+              icon={<DeleteOutlined />}
+            />
+          </Popconfirm>
         </div>
       );
     },
   },
 ];
 
-export const dataMock = [
+export const dataMock: iTransacao[] = [
   {
-    key: "1",
+    id: "1",
     data: "01/05/2026",
     categoria: "Alimentação",
     status: "Pago",
     valor: 85.5,
+    descricao: "Almoço executivo",
+    tipo: "entrada",
   },
   {
-    key: "2",
+    id: "2",
     data: "02/05/2026",
     categoria: "Transporte",
     status: "Pendente",
-    valor: -42,
+    valor: 42,
+    descricao: "Uber trabalho",
+    tipo: "saida",
   },
   {
-    key: "3",
+    id: "3",
     data: "05/05/2026",
     categoria: "Assinaturas",
     status: "Pago",
     valor: 39.9,
-  },
-  {
-    key: "4",
-    data: "10/05/2026",
-    categoria: "Lazer",
-    status: "Recebido",
-    valor: 150,
-  },
-  {
-    key: "5",
-    data: "12/05/2026",
-    categoria: "Educação",
-    status: "Pago",
-    valor: 450,
-  },
-  {
-    key: "6",
-    data: "15/05/2026",
-    categoria: "Saúde",
-    status: "Pago",
-    valor: 120,
-  },
-  {
-    key: "7",
-    data: "18/05/2026",
-    categoria: "Moradia",
-    status: "Pendente",
-    valor: 1200,
-  },
-  {
-    key: "8",
-    data: "20/05/2026",
-    categoria: "Supermercado",
-    status: "Pago",
-    valor: 325.15,
-  },
-  {
-    key: "9",
-    data: "22/05/2026",
-    categoria: "Vestuário",
-    status: "Pago",
-    valor: 89.9,
-  },
-  {
-    key: "10",
-    data: "25/05/2026",
-    categoria: "Investimentos",
-    status: "Pendente",
-    valor: 500,
+    descricao: "Netflix",
+    tipo: "entrada",
   },
 ];

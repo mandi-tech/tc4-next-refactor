@@ -2,7 +2,7 @@ import { iTransacao } from "./iTransacoes";
 
 export interface ModalProps {
   isModalOpen: boolean;
-  handleOk: () => void;
+  handleOk: (values: any) => void;
   handleCancel: () => void;
 }
 

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import "../styles/globals.css";
+import "../../styles/globals.css";
 import { manrope } from "@/styles/fonts";
-import SidebarMenu from "@/components/sidebar_menu";
-import Topbar from "@/components/topbar";
-import Providers from "@/components/provider";
+import Providers from "@/components/ui/provider";
 
 export const metadata: Metadata = {
   title: "Bytebank",
@@ -22,13 +20,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Providers>
-          <div className="flex">
-            <SidebarMenu />
-            <main className="flex flex-col px-10 py-4 w-full h-screen overflow-y-auto">
-              <Topbar />
-              {children}
-            </main>
-          </div>
+          <main>{children}</main>
         </Providers>
       </body>
     </html>

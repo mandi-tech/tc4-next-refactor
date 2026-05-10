@@ -5,11 +5,13 @@ import {
   FileTextOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from "@ant-design/icons";
-import { Button, Menu, MenuProps } from "antd";
+import { Button, Menu, MenuProps, Switch } from "antd";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -27,8 +29,29 @@ const items: MenuItem[] = [
 ];
 
 export default function SidebarMenu() {
+  const [mounted, setMounted] = useState(false);
+
   const [collapsed, setCollapsed] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
+    setIsDark(savedTheme === "dark" || (!savedTheme && prefersDark));
+  }, []);
+
+  const toggleTheme = (checked: boolean) => {
+    setIsDark(checked);
+    const newTheme = checked ? "dark" : "light";
+    localStorage.setItem("theme", newTheme);
+    window.dispatchEvent(new Event("storage"));
+    if (checked) document.documentElement.classList.add("dark");
+    else document.documentElement.classList.remove("dark");
+  };
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -49,6 +72,12 @@ export default function SidebarMenu() {
         inlineCollapsed={collapsed}
         items={items}
         className="border-none bg-transparent"
+      />
+      <Switch
+        checked={isDark}
+        onChange={toggleTheme}
+        checkedChildren={<MoonOutlined />}
+        unCheckedChildren={<SunOutlined />}
       />
     </div>
   );

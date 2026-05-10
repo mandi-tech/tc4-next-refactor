@@ -1,60 +1,51 @@
 "use client";
 
-import { MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { Avatar, Button, Switch } from "antd";
+import { Avatar, Button } from "antd";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import ModalTransacao from "./modals/modal_transacao";
+import { useState } from "react";
+import ModalTransacao from "../features/modals/modal_transacao";
 
 export default function Topbar() {
-  const [mounted, setMounted] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-
   const [tipoTransacao, setTipoTransacao] = useState<"entrada" | "saida">(
     "entrada",
   );
 
-  const handlemodalOpen = () => {
-    setModalOpen(!modalOpen);
+  const pathname = usePathname();
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleReceitaOpen = () => {
     setTipoTransacao("entrada");
+    setModalOpen(true);
   };
 
   const handleSaidaOpen = () => {
-    setModalOpen(!modalOpen);
     setTipoTransacao("saida");
+    setModalOpen(true);
   };
 
-  useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
-    setIsDark(savedTheme === "dark" || (!savedTheme && prefersDark));
-  }, []);
+  const handleSaveNewTransacao = (values: any) => {
+    const dadosFormatados = {
+      ...values,
+      agendamento: values.agendamento
+        ? values.agendamento.format("DD/MM/YYYY")
+        : null,
+      nota_fiscal:
+        values.nota_fiscal && values.nota_fiscal.length > 0
+          ? values.nota_fiscal[0].name
+          : null,
+    };
 
-  const toggleTheme = (checked: boolean) => {
-    setIsDark(checked);
-    const newTheme = checked ? "dark" : "light";
-    localStorage.setItem("theme", newTheme);
-
-    window.dispatchEvent(new Event("storage"));
-
-    if (checked) document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-  };
-
-  if (!mounted) {
-    return (
-      <div className="flex justify-between items-center py-5">
-        <h1 className="text-3xl font-semibold">Dashboard</h1>
-        <Switch disabled loading />
-      </div>
+    console.log(
+      `Criando nova ${tipoTransacao.toUpperCase()}:`,
+      dadosFormatados,
     );
-  }
 
-  const pathname = usePathname();
+    handleCloseModal();
+  };
 
   const getTitle = () => {
     if (pathname === "/") return "Dashboard";
@@ -70,7 +61,8 @@ export default function Topbar() {
         <div className="flex flex-col md:flex-row gap-2">
           <Button
             className="w-full !bg-branco !text-azul"
-            onClick={handlemodalOpen}
+            onClick={handleReceitaOpen}
+            size="large"
           >
             Nova Receita
           </Button>
@@ -78,18 +70,10 @@ export default function Topbar() {
             variant="outlined"
             className="w-full !bg-azul !text-branco"
             onClick={handleSaidaOpen}
+            size="large"
           >
             Nova Saída
           </Button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Switch
-            checked={isDark}
-            onChange={toggleTheme}
-            checkedChildren={<MoonOutlined />}
-            unCheckedChildren={<SunOutlined />}
-          />
         </div>
 
         <div className="flex items-center gap-2 border-l pl-4 border-border">
@@ -106,8 +90,8 @@ export default function Topbar() {
       </div>
       <ModalTransacao
         isModalOpen={modalOpen}
-        handleOk={() => {}}
-        handleCancel={handlemodalOpen}
+        handleOk={handleSaveNewTransacao}
+        handleCancel={handleCloseModal}
         tipo={"novo"}
         tipoTransacao={tipoTransacao}
       />

@@ -94,8 +94,9 @@ export const tipoSaida = [
 ];
 
 export interface iTransacao {
-  key: string;
+  id: string;
   data: string;
+  tipo: string;
   categoria: string;
   status: string;
   valor: number;
