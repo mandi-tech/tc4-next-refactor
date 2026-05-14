@@ -2,18 +2,102 @@
 
 import Filtros from "@/components/features/filtros/filtros";
 import ModalTransacao from "@/components/features/modals/modal_transacao";
-import { iTransacao } from "@/libs/types/iTransacoes";
-import { dataMock, getColunasExtrato } from "@/libs/utils/tabela_transacao";
-import { Button, Table } from "antd";
+import { getColunasExtrato } from "@/libs/utils/tabela_transacao";
+import { Table } from "antd";
 import { useState } from "react";
 
+import { useQuery, useMutation } from "@apollo/client/react";
+import { useSearchParams } from "next/navigation";
+import {
+  Transacao,
+  GET_TRANSACOES,
+  TransacoesResponse,
+  TransacoesVariables,
+} from "@/graphql/queries/transacoes";
+import {
+  CRIAR_TRANSACAO,
+  EDITAR_TRANSACAO,
+  DELETAR_TRANSACAO,
+  CriarTransacaoResponse,
+  CriarTransacaoVariables,
+  EditarTransacaoResponse,
+  EditarTransacaoVariables,
+  DeletarTransacaoResponse,
+  DeletarTransacaoVariables,
+} from "@/graphql/mutations/transacoes";
+import { notification } from "antd";
+
 export default function ExtratoPage() {
+  const searchParams = useSearchParams();
   const [modalOpen, setModalOpen] = useState(false);
   const [transacaoSelecionada, setTransacaoSelecionada] = useState<
-    iTransacao | undefined
+    Transacao | undefined
   >(undefined);
 
-  const handleEdit = (transacao: iTransacao) => {
+  const tipo = searchParams.get("tipo")?.toUpperCase();
+  const data_inicial = searchParams.get("data_inicial");
+  const data_final = searchParams.get("data_final");
+  const categoriaId = searchParams.get("categoriaId");
+
+  const userStr =
+    typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  const user = userStr ? JSON.parse(userStr) : null;
+  const usuarioId = user?.id || "";
+
+  const { data, loading, refetch } = useQuery<
+    TransacoesResponse,
+    TransacoesVariables
+  >(GET_TRANSACOES, {
+    variables: {
+      usuarioId: usuarioId,
+      tipo: tipo || undefined,
+      data_inicial: data_inicial || undefined,
+      data_final: data_final || undefined,
+      categoriaId: categoriaId || undefined,
+    },
+    skip: !usuarioId || usuarioId === "",
+  });
+
+  const [criarTransacao, { loading: creating }] = useMutation<
+    CriarTransacaoResponse,
+    CriarTransacaoVariables
+  >(CRIAR_TRANSACAO, {
+    onCompleted: () => {
+      notification.success({ message: "Transação criada com sucesso!" });
+      refetch();
+    },
+  });
+
+  const [editarTransacao, { loading: updating }] = useMutation<
+    EditarTransacaoResponse,
+    EditarTransacaoVariables
+  >(EDITAR_TRANSACAO, {
+    onCompleted: () => {
+      notification.success({ message: "Transação atualizada com sucesso!" });
+      refetch();
+    },
+  });
+
+  const [deletarTransacao] = useMutation<
+    DeletarTransacaoResponse,
+    DeletarTransacaoVariables
+  >(DELETAR_TRANSACAO, {
+    onCompleted: () => {
+      notification.success({ message: "Transação deletada com sucesso!" });
+      refetch();
+    },
+    onError: (error) => {
+      notification.error({
+        message: "Erro ao deletar transação",
+        description: error.message,
+      });
+    },
+  });
+
+  const transacoes =
+    (data?.transacoesPorUsuario?.transacoes as Transacao[]) || [];
+
+  const handleEdit = (transacao: Transacao) => {
     setTransacaoSelecionada(transacao);
     setModalOpen(true);
   };
@@ -24,23 +108,37 @@ export default function ExtratoPage() {
   };
 
   const handleDelete = (id: string) => {
-    console.log("Deletando ID:", id);
+    deletarTransacao({ variables: { id } });
   };
 
   const handleSaveTransacao = (values: any) => {
-    const dadosFormatados = {
-      ...values,
-      agendamento: values.agendamento
-        ? values.agendamento.format("DD/MM/YYYY")
-        : null,
-
-      nota_fiscal:
-        values.nota_fiscal && values.nota_fiscal.length > 0
-          ? values.nota_fiscal[0].name
-          : null,
+    const commonVariables = {
+      tipo: transacaoSelecionada
+        ? transacaoSelecionada.tipo
+        : searchParams.get("tipo")?.toUpperCase() || "ENTRADA",
+      descricao: values.descricao,
+      valor: values.valor,
+      categoria: values.categoria,
+      data_agendamento: values.agendamento.format("DD/MM/YYYY"),
+      nota_fiscal: values.nota_fiscal?.[0]?.name,
     };
 
-    console.log("Dados prontos para o Backend:", dadosFormatados);
+    if (transacaoSelecionada) {
+      editarTransacao({
+        variables: {
+          id: transacaoSelecionada.id,
+          ...commonVariables,
+        },
+      });
+    } else {
+      criarTransacao({
+        variables: {
+          usuarioId,
+          ...commonVariables,
+          tipo: commonVariables.tipo || "ENTRADA",
+        },
+      });
+    }
 
     handleCloseModal();
   };
@@ -54,7 +152,12 @@ export default function ExtratoPage() {
     <div className="flex flex-col gap-8">
       <Filtros />
 
-      <Table columns={colunas} dataSource={dataMock} rowKey="id" />
+      <Table
+        columns={colunas}
+        dataSource={transacoes}
+        rowKey="id"
+        loading={loading}
+      />
 
       <ModalTransacao
         isModalOpen={modalOpen}
@@ -65,6 +168,7 @@ export default function ExtratoPage() {
           (transacaoSelecionada?.tipo?.toLowerCase() as any) || "entrada"
         }
         initialData={transacaoSelecionada}
+        loading={creating || updating}
       />
     </div>
   );

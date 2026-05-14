@@ -1,0 +1,95 @@
+{
+  "data": {
+    "__type": {
+      "fields": [
+        {
+          "name": "usuario",
+          "args": [
+            { "name": "id", "type": { "name": null, "kind": "NON_NULL" } }
+          ]
+        },
+        {
+          "name": "transacoesPorUsuario",
+          "args": [
+            {
+              "name": "usuarioId",
+              "type": { "name": null, "kind": "NON_NULL" }
+            },
+            {
+              "name": "data_inicial",
+              "type": { "name": "String", "kind": "SCALAR" }
+            },
+            {
+              "name": "data_final",
+              "type": { "name": "String", "kind": "SCALAR" }
+            },
+            { "name": "tipo", "type": { "name": "String", "kind": "SCALAR" } },
+            { "name": "cursor", "type": { "name": "Int", "kind": "SCALAR" } },
+            {
+              "name": "tamanho_pagina",
+              "type": { "name": "Int", "kind": "SCALAR" }
+            }
+          ]
+        },
+        {
+          "name": "saldoTotal",
+          "args": [
+            {
+              "name": "usuarioId",
+              "type": { "name": null, "kind": "NON_NULL" }
+            }
+          ]
+        },
+        {
+          "name": "metricas",
+          "args": [
+            {
+              "name": "usuarioId",
+              "type": { "name": null, "kind": "NON_NULL" }
+            },
+            {
+              "name": "data_inicial",
+              "type": { "name": "String", "kind": "SCALAR" }
+            },
+            {
+              "name": "data_final",
+              "type": { "name": "String", "kind": "SCALAR" }
+            }
+          ]
+        },
+        {
+          "name": "analiseExtrato",
+          "args": [
+            {
+              "name": "usuarioId",
+              "type": { "name": null, "kind": "NON_NULL" }
+            },
+            {
+              "name": "data_inicial",
+              "type": { "name": "String", "kind": "SCALAR" }
+            },
+            {
+              "name": "data_final",
+              "type": { "name": "String", "kind": "SCALAR" }
+            }
+          ]
+        },
+        {
+          "name": "saidasPorCategoria",
+          "args": [
+            {
+              "name": "usuarioId",
+              "type": { "name": null, "kind": "NON_NULL" }
+            }
+          ]
+        },
+        {
+          "name": "listarCategorias",
+          "args": [
+            { "name": "tipo", "type": { "name": "String", "kind": "SCALAR" } }
+          ]
+        }
+      ]
+    }
+  }
+}

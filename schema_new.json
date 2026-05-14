@@ -1,0 +1,40 @@
+{
+  "data": {
+    "__type": {
+      "fields": [
+        { "name": "usuario", "args": [{ "name": "id" }] },
+        {
+          "name": "transacoesPorUsuario",
+          "args": [
+            { "name": "usuarioId" },
+            { "name": "data_inicial" },
+            { "name": "data_final" },
+            { "name": "tipo" },
+            { "name": "categoriaId" },
+            { "name": "cursor" },
+            { "name": "tamanho_pagina" }
+          ]
+        },
+        { "name": "saldoTotal", "args": [{ "name": "usuarioId" }] },
+        {
+          "name": "metricas",
+          "args": [
+            { "name": "usuarioId" },
+            { "name": "data_inicial" },
+            { "name": "data_final" }
+          ]
+        },
+        {
+          "name": "analiseExtrato",
+          "args": [
+            { "name": "usuarioId" },
+            { "name": "data_inicial" },
+            { "name": "data_final" }
+          ]
+        },
+        { "name": "saidasPorCategoria", "args": [{ "name": "usuarioId" }] },
+        { "name": "listarCategorias", "args": [{ "name": "tipo" }] }
+      ]
+    }
+  }
+}

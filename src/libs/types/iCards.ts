@@ -5,4 +5,5 @@ export interface iCardProps extends iEstilos {
   icone: React.ReactNode;
   descricao: string;
   valor: string;
+  loading?: boolean;
 }

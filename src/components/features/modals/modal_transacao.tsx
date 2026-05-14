@@ -11,11 +11,32 @@ import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
 import { tipoEntrada, tipoSaida } from "@/libs/types/iTransacoes";
 import { iModalTransacao } from "@/libs/types/iModal";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
+import {
+  GET_CATEGORIAS,
+  CategoriasResponse,
+} from "@/graphql/queries/categorias";
+import { useQuery } from "@apollo/client/react";
 
 export default function ModalTransacao(props: iModalTransacao) {
   const [form] = Form.useForm();
+
+  const { data: categoriasData } = useQuery<CategoriasResponse>(GET_CATEGORIAS);
+
+  const iconMapping = useMemo(() => {
+    const allHardcoded = [...tipoEntrada, ...tipoSaida];
+    return Object.fromEntries(
+      allHardcoded.map((item) => [item.tipo, item.icone]),
+    );
+  }, []);
+
+  const categoriasFiltradas = useMemo(() => {
+    if (!categoriasData) return [];
+    return categoriasData.listarCategorias.filter(
+      (cat) => cat.tipo === props.tipoTransacao.toUpperCase(),
+    );
+  }, [categoriasData, props.tipoTransacao]);
 
   useEffect(() => {
     if (props.isModalOpen && props.initialData) {
@@ -23,8 +44,8 @@ export default function ModalTransacao(props: iModalTransacao) {
         descricao: props.initialData.descricao,
         valor: props.initialData.valor,
         categoria: props.initialData.categoria,
-        agendamento: props.initialData.data
-          ? dayjs(props.initialData.data, "DD/MM/YYYY")
+        agendamento: props.initialData.data_agendamento
+          ? dayjs(props.initialData.data_agendamento, "DD/MM/YYYY")
           : null,
       });
     } else {
@@ -108,18 +129,17 @@ export default function ModalTransacao(props: iModalTransacao) {
         >
           <Radio.Group className="w-full">
             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {(props.tipoTransacao === "entrada"
-                ? tipoEntrada
-                : tipoSaida
-              ).map((item) => (
+              {categoriasFiltradas.map((item) => (
                 <Radio.Button
-                  key={item.tipo}
-                  value={item.tipo}
+                  key={item.id}
+                  value={item.id}
                   className="flex flex-col items-center justify-center rounded-lg border-2 text-center transition-all"
                   style={{ height: "100%" }}
                 >
-                  <div className="text-2xl pt-2">{item.icone}</div>
-                  <div className="text-md font-semibold">{item.tipo}</div>
+                  <div className="text-2xl pt-2">
+                    {iconMapping[item.categoria] || <InboxOutlined />}
+                  </div>
+                  <div className="text-md font-semibold">{item.categoria}</div>
                 </Radio.Button>
               ))}
             </div>
@@ -153,7 +173,7 @@ export default function ModalTransacao(props: iModalTransacao) {
             Cancelar
           </Button>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={props.loading}>
               {props.tipo === "novo" ? "Salvar" : "Atualizar"}
             </Button>
           </Form.Item>

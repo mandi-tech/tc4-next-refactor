@@ -6,50 +6,111 @@ import GraficoDonuts from "@/components/ui/graficos/donuts";
 import GraficoLinhasBarras, {
   ChartConfig,
 } from "@/components/ui/graficos/linhas_barras";
-import Tabela from "@/components/ui/tabela";
-import { colunasTransacao, dataMock } from "@/libs/utils/tabela_transacao";
+import { colunasTransacao } from "@/libs/utils/tabela_transacao";
 import {
   ArrowRightOutlined,
   BankOutlined,
   FallOutlined,
   RiseOutlined,
 } from "@ant-design/icons";
-import { Table } from "antd";
+import { Table, Spin } from "antd";
 import Link from "next/link";
+import { useQuery } from "@apollo/client/react";
+import { 
+  GET_METRICAS, 
+  GET_ANALISE_EXTRATO, 
+  GET_SAIDAS_POR_CATEGORIA,
+  MetricasResponse,
+  AnaliseExtratoResponse,
+  SaidasPorCategoriaResponse,
+  DashboardVariables
+} from "@/graphql/queries/dashboard";
+import { 
+  GET_TRANSACOES, 
+  TransacoesResponse, 
+  TransacoesVariables 
+} from "@/graphql/queries/transacoes";
+import { useSearchParams } from "next/navigation";
 
 export default function Home() {
-  const mockData = [
-    { mes: "Jan", renda: 4000, saldo: 2400, gastos: 150 },
-    { mes: "Fev", renda: 3000, saldo: 1398, gastos: 340 },
-    { mes: "Mar", renda: 2000, saldo: 9800, gastos: 650 },
-    { mes: "Abr", renda: 2780, saldo: 3908, gastos: 10 },
-  ];
+  const searchParams = useSearchParams();
+  
+  // Get user from localStorage
+  const userStr = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  const user = userStr ? JSON.parse(userStr) : null;
+  const usuarioId = user?.id || "";
 
+  const dataInicial = searchParams.get("data_inicial") || undefined;
+  const dataFinal = searchParams.get("data_final") || undefined;
+
+  // Queries
+  const { data: metricasData, loading: loadingMetricas } = useQuery<MetricasResponse, DashboardVariables>(
+    GET_METRICAS, 
+    { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
+  );
+
+  const { data: analiseData, loading: loadingAnalise } = useQuery<AnaliseExtratoResponse, DashboardVariables>(
+    GET_ANALISE_EXTRATO, 
+    { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
+  );
+
+  const { data: categoriasData, loading: loadingCategorias } = useQuery<SaidasPorCategoriaResponse, DashboardVariables>(
+    GET_SAIDAS_POR_CATEGORIA, 
+    { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
+  );
+
+  const { data: transacoesData, loading: loadingTransacoes } = useQuery<TransacoesResponse, TransacoesVariables>(
+    GET_TRANSACOES,
+    { 
+      variables: { 
+        usuarioId, 
+        tamanho_pagina: 5,
+        data_inicial: dataInicial,
+        data_final: dataFinal
+      }, 
+      skip: !usuarioId 
+    }
+  );
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+  const chartData = analiseData?.analiseExtrato.map(item => ({
+    mes: item.data,
+    renda: item.entrada,
+    gastos: item.saida,
+    saldo: item.saldo
+  })) || [];
+
+  const donutData = categoriasData?.saidasPorCategoria.map(item => ({
+    name: item.categoria,
+    value: item.quantidade,
+    porcentagem: item.porcentagem
+  })) || [];
+
+  const transacoesRecentes = transacoesData?.transacoesPorUsuario.transacoes || [];
   const chartConfigs: ChartConfig[] = [
     {
       key: "renda",
-      label: "Renda",
-      color: "var(--amarelo)",
+      label: "Entradas",
+      color: "var(--verde)",
       type: "bar",
     },
     {
       key: "gastos",
-      label: "Gastos",
+      label: "Saídas",
       color: "var(--rosa)",
       type: "bar",
     },
     {
       key: "saldo",
-      label: "Saldo Final",
+      label: "Saldo Acumulado",
       color: "var(--lavanda)",
       type: "line",
     },
-  ];
-
-  const stats = [
-    { name: "Alimentação", value: 400 },
-    { name: "Jogos", value: 300 },
-    { name: "Luz", value: 100 },
   ];
 
   return (
@@ -60,37 +121,42 @@ export default function Home() {
           <Card
             icone={<BankOutlined />}
             descricao="Saldo Total"
-            valor="R$ 4.000,00"
+            valor={formatCurrency(metricasData?.metricas.saldo || 0)}
             backgroundColor="azul"
             color="cinza"
+            loading={loadingMetricas}
           />
           <Card
             icone={<RiseOutlined />}
             descricao="Receita Mensal"
-            valor="R$ 5.000,00"
+            valor={formatCurrency(metricasData?.metricas.total_entrada || 0)}
             backgroundColor="verde"
             color="branco"
+            loading={loadingMetricas}
           />
           <Card
             icone={<FallOutlined />}
-            descricao="Desepesa Mensal"
-            valor="R$ 1.000,00"
+            descricao="Despesa Mensal"
+            valor={formatCurrency(metricasData?.metricas.total_saida || 0)}
             backgroundColor="rosa"
             color="branco"
+            loading={loadingMetricas}
           />
         </section>
         <section className="grid grid-cols-8 gap-6">
           <GraficoLinhasBarras
-            data={mockData}
+            data={chartData}
             configs={chartConfigs}
             xAxisKey="mes"
-            titulo="Análise de Receita"
+            titulo="Análise Financeira Diária"
             className="col-span-8 xl:col-span-5"
+            loading={loadingAnalise}
           />
           <GraficoDonuts
-            data={stats}
+            data={donutData}
             className="col-span-8 xl:col-span-3"
-            titulo="Distribuição de Gastos"
+            titulo="Distribuição de Gastos por Categoria"
+            loading={loadingCategorias}
           />
         </section>
         <div>
@@ -99,7 +165,13 @@ export default function Home() {
               Transações Recentes
             </h3>
             <Link
-              href={"/extrato"}
+              href={{
+                pathname: "/extrato",
+                query: {
+                  ...(dataInicial && { data_inicial: dataInicial }),
+                  ...(dataFinal && { data_final: dataFinal }),
+                },
+              }}
               className="text-lavanda text-md font-semibold flex gap-2 items-center"
             >
               Visualizar extrato
@@ -109,9 +181,10 @@ export default function Home() {
 
           <Table
             columns={colunasTransacao}
-            dataSource={dataMock}
+            dataSource={transacoesRecentes}
             pagination={false}
             rowKey="id"
+            loading={loadingTransacoes}
           />
         </div>
       </div>

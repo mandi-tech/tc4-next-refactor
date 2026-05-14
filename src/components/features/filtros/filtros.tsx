@@ -1,10 +1,15 @@
 "use client";
 
 import { tipoEntrada, tipoSaida } from "@/libs/types/iTransacoes";
-import { DatePicker, Radio, Select } from "antd";
+import { DatePicker, Radio, Select, Spin } from "antd";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import {
+  GET_CATEGORIAS,
+  CategoriasResponse,
+} from "@/graphql/queries/categorias";
+import { useQuery } from "@apollo/client/react";
 
 dayjs.extend(customParseFormat);
 
@@ -22,7 +27,7 @@ export default function Filtros({
   const { replace } = useRouter();
 
   const tipo = searchParams.get("tipo");
-  const categoria = searchParams.get("categoria");
+  const categoriaId = searchParams.get("categoriaId");
   const dataInicial = searchParams.get("data_inicial");
   const dataFinal = searchParams.get("data_final");
 
@@ -52,18 +57,18 @@ export default function Filtros({
     });
   };
 
-  const listaCategorias = Array.from(
-    new Map(
-      [...tipoEntrada, ...tipoSaida].map((item) => [
-        item.tipo,
-        { label: item.tipo, value: item.key },
-      ]),
-    ).values(),
-  );
+  const { data: categoriasData, loading: loadingCategorias } =
+    useQuery<CategoriasResponse>(GET_CATEGORIAS);
+
+  const listaCategorias =
+    categoriasData?.listarCategorias.map((cat) => ({
+      label: cat.categoria,
+      value: cat.id,
+    })) || [];
 
   return (
     <div className="flex justify-end gap-3 w-full items-center">
-      {filtros.find((filtro) => filtro === "tipo") ? (
+      {filtros.includes("tipo") && (
         <Radio.Group buttonStyle="solid" value={tipo}>
           <Radio.Button value="entrada" onClick={onRadioChange}>
             Entrada
@@ -72,20 +77,22 @@ export default function Filtros({
             Saída
           </Radio.Button>
         </Radio.Group>
-      ) : null}
+      )}
 
-      {filtros.find((filtro) => filtro === "categoria") ? (
+      {filtros.includes("categoria") && (
         <Select
           options={listaCategorias}
           placeholder="Categorias"
           allowClear
-          value={categoria}
-          onChange={(val) => updateURL({ categoria: val })}
+          value={categoriaId}
+          onChange={(val) => updateURL({ categoriaId: val })}
           style={{ width: 200 }}
+          loading={loadingCategorias}
+          notFoundContent={loadingCategorias ? <Spin size="small" /> : null}
         />
-      ) : null}
+      )}
 
-      {filtros.find((filtro) => filtro === "periodo") ? (
+      {filtros.includes("periodo") && (
         <RangePicker
           format="DD/MM/YYYY"
           placeholder={["Data início", "Data fim"]}
@@ -99,7 +106,7 @@ export default function Filtros({
               : null
           }
         />
-      ) : null}
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { iTransacao } from "./iTransacoes";
+import { Transacao } from "@/graphql/queries/transacoes";
 
 export interface ModalProps {
   isModalOpen: boolean;
@@ -9,5 +9,6 @@ export interface ModalProps {
 export interface iModalTransacao extends ModalProps {
   tipoTransacao: "entrada" | "saida";
   tipo: "novo" | "edicao";
-  initialData?: iTransacao;
+  initialData?: Transacao;
+  loading?: boolean;
 }

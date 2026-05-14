@@ -1,0 +1,47 @@
+{
+  "data": {
+    "__type": {
+      "fields": [
+        {
+          "name": "criarUsuario",
+          "args": [{ "name": "nome" }, { "name": "email" }, { "name": "senha" }]
+        },
+        {
+          "name": "editarUsuario",
+          "args": [
+            { "name": "id" },
+            { "name": "nome" },
+            { "name": "email" },
+            { "name": "senha" }
+          ]
+        },
+        { "name": "login", "args": [{ "name": "email" }, { "name": "senha" }] },
+        {
+          "name": "criarTransacao",
+          "args": [
+            { "name": "usuarioId" },
+            { "name": "tipo" },
+            { "name": "descricao" },
+            { "name": "valor" },
+            { "name": "categoria" },
+            { "name": "data_agendamento" },
+            { "name": "nota_fiscal" }
+          ]
+        },
+        {
+          "name": "editarTransacao",
+          "args": [
+            { "name": "id" },
+            { "name": "tipo" },
+            { "name": "descricao" },
+            { "name": "valor" },
+            { "name": "categoria" },
+            { "name": "data_agendamento" },
+            { "name": "nota_fiscal" }
+          ]
+        },
+        { "name": "deletarTransacao", "args": [{ "name": "id" }] }
+      ]
+    }
+  }
+}
