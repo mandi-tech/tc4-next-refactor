@@ -6,9 +6,21 @@ import {
   validarNomeCompleto,
 } from "@/libs/utils/validadores";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Divider, Form, Input, Alert } from "antd";
+import { Button, Divider, Form, Input, Alert, message } from "antd";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function NovoUsuarioPage() {
+  const { registrar, registerLoading } = useAuth();
+
+  const onFinish = async (values: any) => {
+    try {
+      await registrar(values.nome, values.email, values.senha);
+      message.success("Usuário criado com sucesso! Faça login para continuar.");
+    } catch (err: any) {
+      message.error(err.message || "Erro ao criar usuário.");
+    }
+  };
+
   return (
     <section className="w-full h-screen flex items-center justify-center">
       <div className="w-[30%] flex flex-col items-center gap-6  px-10 py-15 rounded-lg shadow-lg">
@@ -16,6 +28,7 @@ export default function NovoUsuarioPage() {
         <Form
           layout="vertical"
           className="w-full gap-2 items-center justify-center"
+          onFinish={onFinish}
         >
           <Form.Item
             label="Nome completo"
@@ -94,7 +107,7 @@ export default function NovoUsuarioPage() {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full">
+            <Button type="primary" htmlType="submit" className="w-full" loading={registerLoading}>
               Cadastrar
             </Button>
           </Form.Item>
