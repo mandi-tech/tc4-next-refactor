@@ -77,8 +77,8 @@ export const tipoSaida = [
     icone: <MedicineBoxOutlined />,
   },
   {
-    key: "saida-entretenimento",
-    tipo: "Entretenimento",
+    key: "saida-lazer",
+    tipo: "Lazer",
     icone: <SmileOutlined />,
   },
   {

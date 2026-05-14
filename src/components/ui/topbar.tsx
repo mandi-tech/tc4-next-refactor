@@ -1,11 +1,13 @@
 "use client";
 
-import { Avatar, Button } from "antd";
+import { Avatar, Button, message } from "antd";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import ModalTransacao from "../features/modals/modal_transacao";
+import { useTransacoes } from "@/hooks/use-transacoes";
 
 export default function Topbar() {
+  const { criarTransacao, creating } = useTransacoes();
   const [modalOpen, setModalOpen] = useState(false);
   const [tipoTransacao, setTipoTransacao] = useState<"entrada" | "saida">(
     "entrada",
@@ -27,24 +29,37 @@ export default function Topbar() {
     setModalOpen(true);
   };
 
-  const handleSaveNewTransacao = (values: any) => {
-    const dadosFormatados = {
-      ...values,
-      agendamento: values.agendamento
-        ? values.agendamento.format("DD/MM/YYYY")
-        : null,
-      nota_fiscal:
-        values.nota_fiscal && values.nota_fiscal.length > 0
-          ? values.nota_fiscal[0].name
-          : null,
-    };
+  const handleSaveNewTransacao = async (values: any) => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) {
+        message.error("Usuário não encontrado. Por favor, faça login novamente.");
+        return;
+      }
+      const user = JSON.parse(userStr);
 
-    console.log(
-      `Criando nova ${tipoTransacao.toUpperCase()}:`,
-      dadosFormatados,
-    );
+      await criarTransacao({
+        usuarioId: user.id,
+        tipo: tipoTransacao.toUpperCase(),
+        descricao: values.descricao,
+        valor: values.valor,
+        categoria: values.categoria,
+        data_agendamento: values.agendamento
+          ? values.agendamento.format("DD/MM/YYYY")
+          : "",
+        nota_fiscal:
+          values.nota_fiscal && values.nota_fiscal.length > 0
+            ? values.nota_fiscal[0].name
+            : undefined,
+      });
 
-    handleCloseModal();
+      message.success(
+        `${tipoTransacao === "entrada" ? "Receita" : "Despesa"} criada com sucesso!`,
+      );
+      handleCloseModal();
+    } catch (err: any) {
+      message.error(err.message || "Erro ao criar transação.");
+    }
   };
 
   const getTitle = () => {
@@ -94,6 +109,7 @@ export default function Topbar() {
         handleCancel={handleCloseModal}
         tipo={"novo"}
         tipoTransacao={tipoTransacao}
+        loading={creating}
       />
     </div>
   );

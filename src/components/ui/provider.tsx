@@ -5,6 +5,9 @@ import { ConfigProvider, theme as antdTheme } from "antd";
 import themeConfig from "@/styles/theme/theme";
 import { darkPalette, lightPalette } from "@/styles/theme/cores";
 
+import { ApolloProvider } from "@apollo/client/react";
+import { client } from "@/libs/apollo-client";
+
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
 
@@ -38,24 +41,26 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, [applyTheme]);
 
   return (
-    <ConfigProvider
-      theme={{
-        ...themeConfig,
-        algorithm: isDark
-          ? antdTheme.darkAlgorithm
-          : antdTheme.defaultAlgorithm,
-        token: {
-          ...themeConfig.token,
-          colorPrimary: currentPalette.azul,
-          colorSuccess: currentPalette.verde,
-          colorError: currentPalette.vermelho,
-          colorBgLayout: currentPalette.background,
-          colorBgContainer: currentPalette.secondaryBackground,
-          colorText: currentPalette.foreground,
-        },
-      }}
-    >
-      {children}
-    </ConfigProvider>
+    <ApolloProvider client={client}>
+      <ConfigProvider
+        theme={{
+          ...themeConfig,
+          algorithm: isDark
+            ? antdTheme.darkAlgorithm
+            : antdTheme.defaultAlgorithm,
+          token: {
+            ...themeConfig.token,
+            colorPrimary: currentPalette.azul,
+            colorSuccess: currentPalette.verde,
+            colorError: currentPalette.vermelho,
+            colorBgLayout: currentPalette.background,
+            colorBgContainer: currentPalette.secondaryBackground,
+            colorText: currentPalette.foreground,
+          },
+        }}
+      >
+        {children}
+      </ConfigProvider>
+    </ApolloProvider>
   );
 }

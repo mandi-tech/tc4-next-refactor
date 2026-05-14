@@ -1,17 +1,23 @@
-import { iTransacao, statusTransacao } from "@/libs/types/iTransacoes";
+import { Transacao } from "@/graphql/queries/transacoes";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
+import { iTransacao, tipoSaida } from "../types/iTransacoes";
 
 interface AcoesProps {
-  onEdit: (record: iTransacao) => void;
+  onEdit: (record: Transacao) => void;
   onDelete: (id: string) => void;
 }
 
 export const colunasTransacao = [
   {
     title: "Data agendamento",
-    dataIndex: "data",
-    key: "data",
+    dataIndex: "data_agendamento",
+    key: "data_agendamento",
+  },
+  {
+    title: "Descrição",
+    dataIndex: "descricao",
+    key: "descricao",
   },
   {
     title: "Categoria",
@@ -19,34 +25,16 @@ export const colunasTransacao = [
     key: "categoria",
   },
   {
-    title: "Status",
-    dataIndex: "status",
-    key: "status",
-    render: (item: string) => {
-      const status = statusTransacao.find((s) => s.label === item);
-
-      const classes = status?.color || "border-azul text-cinza bg-cinza/30";
-
-      return (
-        <span
-          className={`${classes} border-2 text-sm font-bold rounded-2xl px-3 py-1`}
-        >
-          {item}
-        </span>
-      );
-    },
-  },
-  {
     title: "Valor",
     dataIndex: "valor",
     key: "valor",
-    render: (item: number) => {
+    render: (item: number, dados: Transacao) => {
       const valorFormatado = new Intl.NumberFormat("pt-BR", {
         style: "currency",
         currency: "BRL",
       }).format(item);
 
-      const corTexto = item < 0 ? "text-vermelho" : "text-verde";
+      const corTexto = dados.tipo === "SAIDA" ? "text-vermelho" : "text-verde";
 
       return <p className={`font-bold ${corTexto}`}>{valorFormatado}</p>;
     },
@@ -58,17 +46,17 @@ export const getColunasExtrato = ({ onEdit, onDelete }: AcoesProps) => [
   {
     title: "Ações",
     key: "acoes",
-    render: (_: any, record: iTransacao) => {
+    render: (_: any, record: Transacao) => {
       return (
         <div className="flex gap-2">
           <Button
-            onClick={() => onEdit(record)} // Passa o objeto completo
+            onClick={() => onEdit(record)}
             className="!bg-azul !text-branco"
             icon={<EditOutlined />}
           />
           <Popconfirm
             title="Deseja excluir a transação?"
-            onConfirm={() => onDelete(record.id)} // Passa apenas o ID
+            onConfirm={() => onDelete(record.id)}
             okText="Sim"
             cancelText="Não"
           >
@@ -80,35 +68,5 @@ export const getColunasExtrato = ({ onEdit, onDelete }: AcoesProps) => [
         </div>
       );
     },
-  },
-];
-
-export const dataMock: iTransacao[] = [
-  {
-    id: "1",
-    data: "01/05/2026",
-    categoria: "Alimentação",
-    status: "Pago",
-    valor: 85.5,
-    descricao: "Almoço executivo",
-    tipo: "entrada",
-  },
-  {
-    id: "2",
-    data: "02/05/2026",
-    categoria: "Transporte",
-    status: "Pendente",
-    valor: 42,
-    descricao: "Uber trabalho",
-    tipo: "saida",
-  },
-  {
-    id: "3",
-    data: "05/05/2026",
-    categoria: "Assinaturas",
-    status: "Pago",
-    valor: 39.9,
-    descricao: "Netflix",
-    tipo: "entrada",
   },
 ];

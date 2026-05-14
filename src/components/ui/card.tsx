@@ -1,4 +1,5 @@
 import { iCardProps } from "@/libs/types/iCards";
+import { Skeleton } from "antd";
 
 function getContrastColor(hexColor: string) {
   if (!hexColor) return "var(--preto)";
@@ -34,9 +35,13 @@ export default function Card(props: iCardProps) {
 
       <div>
         <p className={`opacity-80 text-sm`}>{props.descricao}</p>
-        <h1 className={`text-${props.color} text-3xl font-semibold`}>
-          {props.valor}
-        </h1>
+        {props.loading ? (
+          <Skeleton.Button active size="large" className="w-full mt-2" block />
+        ) : (
+          <h1 className={`text-${props.color} text-3xl font-semibold`}>
+            {props.valor}
+          </h1>
+        )}
       </div>
 
       <div>{props.footer}</div>
