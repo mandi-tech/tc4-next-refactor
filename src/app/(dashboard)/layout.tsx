@@ -4,6 +4,7 @@ import { manrope } from "@/styles/fonts";
 import SidebarMenu from "@/components/ui/sidebar_menu";
 import Topbar from "@/components/ui/topbar";
 import Providers from "@/components/ui/provider";
+import { SidebarProvider } from "@/context/sidebar-context";
 
 export const metadata: Metadata = {
   title: "Bytebank",
@@ -25,13 +26,15 @@ export default function RootLayout({
       <body className="antialiased">
         <Providers>
           <AuthGuard>
-            <div className="flex">
-              <SidebarMenu />
-              <main className="flex flex-col px-10 py-4 w-full h-screen overflow-y-auto">
-                <Topbar />
-                {children}
-              </main>
-            </div>
+            <SidebarProvider>
+              <div className="flex">
+                <SidebarMenu />
+                <main className="flex flex-col px-4 md:px-10 py-4 w-full h-screen overflow-y-auto">
+                  <Topbar />
+                  {children}
+                </main>
+              </div>
+            </SidebarProvider>
           </AuthGuard>
         </Providers>
       </body>

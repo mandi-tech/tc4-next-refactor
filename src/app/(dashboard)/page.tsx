@@ -16,25 +16,25 @@ import {
 import { Table, Spin } from "antd";
 import Link from "next/link";
 import { useQuery } from "@apollo/client/react";
-import { 
-  GET_METRICAS, 
-  GET_ANALISE_EXTRATO, 
+import {
+  GET_METRICAS,
+  GET_ANALISE_EXTRATO,
   GET_SAIDAS_POR_CATEGORIA,
   MetricasResponse,
   AnaliseExtratoResponse,
   SaidasPorCategoriaResponse,
   DashboardVariables
 } from "@/graphql/queries/dashboard";
-import { 
-  GET_TRANSACOES, 
-  TransacoesResponse, 
-  TransacoesVariables 
+import {
+  GET_TRANSACOES,
+  TransacoesResponse,
+  TransacoesVariables
 } from "@/graphql/queries/transacoes";
 import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const searchParams = useSearchParams();
-  
+
   // Get user from localStorage
   const userStr = typeof window !== "undefined" ? localStorage.getItem("user") : null;
   const user = userStr ? JSON.parse(userStr) : null;
@@ -45,30 +45,30 @@ export default function Home() {
 
   // Queries
   const { data: metricasData, loading: loadingMetricas } = useQuery<MetricasResponse, DashboardVariables>(
-    GET_METRICAS, 
+    GET_METRICAS,
     { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
   );
 
   const { data: analiseData, loading: loadingAnalise } = useQuery<AnaliseExtratoResponse, DashboardVariables>(
-    GET_ANALISE_EXTRATO, 
+    GET_ANALISE_EXTRATO,
     { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
   );
 
   const { data: categoriasData, loading: loadingCategorias } = useQuery<SaidasPorCategoriaResponse, DashboardVariables>(
-    GET_SAIDAS_POR_CATEGORIA, 
+    GET_SAIDAS_POR_CATEGORIA,
     { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
   );
 
   const { data: transacoesData, loading: loadingTransacoes } = useQuery<TransacoesResponse, TransacoesVariables>(
     GET_TRANSACOES,
-    { 
-      variables: { 
-        usuarioId, 
+    {
+      variables: {
+        usuarioId,
         tamanho_pagina: 5,
         data_inicial: dataInicial,
         data_final: dataFinal
-      }, 
-      skip: !usuarioId 
+      },
+      skip: !usuarioId
     }
   );
 
@@ -179,13 +179,16 @@ export default function Home() {
             </Link>
           </div>
 
-          <Table
-            columns={colunasTransacao}
-            dataSource={transacoesRecentes}
-            pagination={false}
-            rowKey="id"
-            loading={loadingTransacoes}
-          />
+          <div className="w-[100%] overflow-x-auto overflow-y-hidden">
+            <Table
+              columns={colunasTransacao}
+              dataSource={transacoesRecentes}
+              pagination={false}
+              rowKey="id"
+              loading={loadingTransacoes}
+            />
+          </div>
+
         </div>
       </div>
     </>

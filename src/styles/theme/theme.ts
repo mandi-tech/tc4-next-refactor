@@ -27,6 +27,7 @@ const theme: ThemeConfig = {
       collapsedWidth: 50,
       itemPaddingInline: 100,
       boxShadow: "none",
+      colorBorder: "transparent",
     },
     Table: {
       borderColor: cores.border,

@@ -4,7 +4,7 @@ import Filtros from "@/components/features/filtros/filtros";
 import ModalTransacao from "@/components/features/modals/modal_transacao";
 import { getColunasExtrato } from "@/libs/utils/tabela_transacao";
 import { Table } from "antd";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useQuery, useMutation } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
@@ -33,30 +33,60 @@ export default function ExtratoPage() {
   const [transacaoSelecionada, setTransacaoSelecionada] = useState<
     Transacao | undefined
   >(undefined);
+  const [usuarioId, setUsuarioId] = useState<string>("");
+
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [tamanhoPagina, setTamanhoPagina] = useState(10);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        if (user?.id) setUsuarioId(user.id);
+      } catch (e) {
+        console.error("Erro ao ler usuário do localStorage", e);
+      }
+    }
+  }, []);
 
   const tipo = searchParams.get("tipo")?.toUpperCase();
   const data_inicial = searchParams.get("data_inicial");
   const data_final = searchParams.get("data_final");
   const categoriaId = searchParams.get("categoriaId");
 
-  const userStr =
-    typeof window !== "undefined" ? localStorage.getItem("user") : null;
-  const user = userStr ? JSON.parse(userStr) : null;
-  const usuarioId = user?.id || "";
+  const variables = useMemo(
+    () => ({
+      usuarioId,
+      tipo: tipo || undefined,
+      data_inicial: data_inicial || undefined,
+      data_final: data_final || undefined,
+      categoriaId: categoriaId || undefined,
+      cursor: (paginaAtual - 1) * tamanhoPagina,
+      tamanho_pagina: tamanhoPagina,
+    }),
+    [
+      usuarioId,
+      tipo,
+      data_inicial,
+      data_final,
+      categoriaId,
+      paginaAtual,
+      tamanhoPagina,
+    ],
+  );
 
   const { data, loading, refetch } = useQuery<
     TransacoesResponse,
     TransacoesVariables
   >(GET_TRANSACOES, {
-    variables: {
-      usuarioId: usuarioId,
-      tipo: tipo || undefined,
-      data_inicial: data_inicial || undefined,
-      data_final: data_final || undefined,
-      categoriaId: categoriaId || undefined,
-    },
-    skip: !usuarioId || usuarioId === "",
+    variables,
+    skip: !usuarioId,
+    fetchPolicy: "cache-and-network",
   });
+
+  const totalItens = data?.transacoesPorUsuario?.total_transacoes || 0;
+  const listaTransacoes = data?.transacoesPorUsuario?.transacoes || [];
 
   const [criarTransacao, { loading: creating }] = useMutation<
     CriarTransacaoResponse,
@@ -93,9 +123,6 @@ export default function ExtratoPage() {
       });
     },
   });
-
-  const transacoes =
-    (data?.transacoesPorUsuario?.transacoes as Transacao[]) || [];
 
   const handleEdit = (transacao: Transacao) => {
     setTransacaoSelecionada(transacao);
@@ -148,16 +175,33 @@ export default function ExtratoPage() {
     onDelete: handleDelete,
   });
 
+  useEffect(() => {
+    setPaginaAtual(1);
+  }, [tipo, data_inicial, data_final, categoriaId]);
+
   return (
     <div className="flex flex-col gap-8">
       <Filtros />
-
-      <Table
-        columns={colunas}
-        dataSource={transacoes}
-        rowKey="id"
-        loading={loading}
-      />
+      <div className="w-[100%] overflow-x-auto overflow-y-hidden">
+        <Table
+          columns={colunas}
+          dataSource={listaTransacoes}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            current: paginaAtual,
+            pageSize: tamanhoPagina,
+            total: totalItens,
+            showSizeChanger: true,
+            position: ["bottomRight"],
+            // Esta função roda quando o usuário clica nos números ou muda o tamanho
+            onChange: (page, pageSize) => {
+              setPaginaAtual(page);
+              setTamanhoPagina(pageSize);
+            },
+          }}
+        />
+      </div>
 
       <ModalTransacao
         isModalOpen={modalOpen}

@@ -67,7 +67,7 @@ export default function Filtros({
     })) || [];
 
   return (
-    <div className="flex justify-end gap-3 w-full items-center">
+    <div className="flex flex-wrap justify-end gap-3 w-full items-center">
       {filtros.includes("tipo") && (
         <Radio.Group buttonStyle="solid" value={tipo}>
           <Radio.Button value="entrada" onClick={onRadioChange}>
@@ -100,9 +100,9 @@ export default function Filtros({
           value={
             dataInicial && dataFinal
               ? [
-                  dayjs(dataInicial, "DD/MM/YYYY"),
-                  dayjs(dataFinal, "DD/MM/YYYY"),
-                ]
+                dayjs(dataInicial, "DD/MM/YYYY"),
+                dayjs(dataFinal, "DD/MM/YYYY"),
+              ]
               : null
           }
         />
