@@ -10,9 +10,7 @@ import { HttpLink } from "@apollo/client/link/http";
 import { notification } from "antd";
 
 const httpLink = new HttpLink({
-  uri:
-    process.env.NEXT_PUBLIC_API_URL ||
-    "https://tc4-backend-graphql-production.up.railway.app/graphql",
+  uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/graphql",
 });
 
 const authLink = new SetContextLink((prevContext) => {
