@@ -13,7 +13,7 @@ import {
   FallOutlined,
   RiseOutlined,
 } from "@ant-design/icons";
-import { Table, Spin } from "antd";
+import { Table } from "antd";
 import Link from "next/link";
 import { useQuery } from "@apollo/client/react";
 import {
@@ -23,20 +23,20 @@ import {
   MetricasResponse,
   AnaliseExtratoResponse,
   SaidasPorCategoriaResponse,
-  DashboardVariables
+  DashboardVariables,
 } from "@/graphql/queries/dashboard";
 import {
   GET_TRANSACOES,
   TransacoesResponse,
-  TransacoesVariables
+  TransacoesVariables,
 } from "@/graphql/queries/transacoes";
 import { useSearchParams } from "next/navigation";
 
 export default function Home() {
   const searchParams = useSearchParams();
 
-  // Get user from localStorage
-  const userStr = typeof window !== "undefined" ? localStorage.getItem("user") : null;
+  const userStr =
+    typeof window !== "undefined" ? localStorage.getItem("user") : null;
   const user = userStr ? JSON.parse(userStr) : null;
   const usuarioId = user?.id || "";
 
@@ -44,33 +44,42 @@ export default function Home() {
   const dataFinal = searchParams.get("data_final") || undefined;
 
   // Queries
-  const { data: metricasData, loading: loadingMetricas } = useQuery<MetricasResponse, DashboardVariables>(
-    GET_METRICAS,
-    { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
-  );
+  const { data: metricasData, loading: loadingMetricas } = useQuery<
+    MetricasResponse,
+    DashboardVariables
+  >(GET_METRICAS, {
+    variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal },
+    skip: !usuarioId,
+  });
 
-  const { data: analiseData, loading: loadingAnalise } = useQuery<AnaliseExtratoResponse, DashboardVariables>(
-    GET_ANALISE_EXTRATO,
-    { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
-  );
+  const { data: analiseData, loading: loadingAnalise } = useQuery<
+    AnaliseExtratoResponse,
+    DashboardVariables
+  >(GET_ANALISE_EXTRATO, {
+    variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal },
+    skip: !usuarioId,
+  });
 
-  const { data: categoriasData, loading: loadingCategorias } = useQuery<SaidasPorCategoriaResponse, DashboardVariables>(
-    GET_SAIDAS_POR_CATEGORIA,
-    { variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal }, skip: !usuarioId }
-  );
+  const { data: categoriasData, loading: loadingCategorias } = useQuery<
+    SaidasPorCategoriaResponse,
+    DashboardVariables
+  >(GET_SAIDAS_POR_CATEGORIA, {
+    variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal },
+    skip: !usuarioId,
+  });
 
-  const { data: transacoesData, loading: loadingTransacoes } = useQuery<TransacoesResponse, TransacoesVariables>(
-    GET_TRANSACOES,
-    {
-      variables: {
-        usuarioId,
-        tamanho_pagina: 5,
-        data_inicial: dataInicial,
-        data_final: dataFinal
-      },
-      skip: !usuarioId
-    }
-  );
+  const { data: transacoesData, loading: loadingTransacoes } = useQuery<
+    TransacoesResponse,
+    TransacoesVariables
+  >(GET_TRANSACOES, {
+    variables: {
+      usuarioId,
+      tamanho_pagina: 5,
+      data_inicial: dataInicial,
+      data_final: dataFinal,
+    },
+    skip: !usuarioId,
+  });
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -78,20 +87,23 @@ export default function Home() {
       currency: "BRL",
     }).format(value);
   };
-  const chartData = analiseData?.analiseExtrato.map(item => ({
-    mes: item.data,
-    renda: item.entrada,
-    gastos: item.saida,
-    saldo: item.saldo
-  })) || [];
+  const chartData =
+    analiseData?.analiseExtrato.map((item) => ({
+      mes: item.data,
+      renda: item.entrada,
+      gastos: item.saida,
+      saldo: item.saldo,
+    })) || [];
 
-  const donutData = categoriasData?.saidasPorCategoria.map(item => ({
-    name: item.categoria,
-    value: item.quantidade,
-    porcentagem: item.porcentagem
-  })) || [];
+  const donutData =
+    categoriasData?.saidasPorCategoria.map((item) => ({
+      name: item.categoria,
+      value: item.quantidade,
+      porcentagem: item.porcentagem,
+    })) || [];
 
-  const transacoesRecentes = transacoesData?.transacoesPorUsuario.transacoes || [];
+  const transacoesRecentes =
+    transacoesData?.transacoesPorUsuario.transacoes || [];
   const chartConfigs: ChartConfig[] = [
     {
       key: "renda",
@@ -174,7 +186,7 @@ export default function Home() {
               }}
               className="text-lavanda text-md font-semibold flex gap-2 items-center"
             >
-              Visualizar extrato
+              <p className="hidden md:contents">Visualizar extrato</p>
               <ArrowRightOutlined />
             </Link>
           </div>
@@ -188,7 +200,6 @@ export default function Home() {
               loading={loadingTransacoes}
             />
           </div>
-
         </div>
       </div>
     </>

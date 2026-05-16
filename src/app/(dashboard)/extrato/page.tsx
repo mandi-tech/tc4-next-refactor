@@ -3,7 +3,7 @@
 import Filtros from "@/components/features/filtros/filtros";
 import ModalTransacao from "@/components/features/modals/modal_transacao";
 import { getColunasExtrato } from "@/libs/utils/tabela_transacao";
-import { Table } from "antd";
+import { App, Table } from "antd";
 import { useEffect, useMemo, useState } from "react";
 
 import { useQuery, useMutation } from "@apollo/client/react";
@@ -25,9 +25,9 @@ import {
   DeletarTransacaoResponse,
   DeletarTransacaoVariables,
 } from "@/graphql/mutations/transacoes";
-import { notification } from "antd";
 
 export default function ExtratoPage() {
+  const { notification } = App.useApp();
   const searchParams = useSearchParams();
   const [modalOpen, setModalOpen] = useState(false);
   const [transacaoSelecionada, setTransacaoSelecionada] = useState<
@@ -92,9 +92,9 @@ export default function ExtratoPage() {
     CriarTransacaoResponse,
     CriarTransacaoVariables
   >(CRIAR_TRANSACAO, {
-    onCompleted: () => {
+    onCompleted: async () => {
       notification.success({ message: "Transação criada com sucesso!" });
-      refetch();
+      await refetch();
     },
   });
 
@@ -144,7 +144,7 @@ export default function ExtratoPage() {
         ? transacaoSelecionada.tipo
         : searchParams.get("tipo")?.toUpperCase() || "ENTRADA",
       descricao: values.descricao,
-      valor: values.valor,
+      valor: parseFloat(values.valor),
       categoria: values.categoria,
       data_agendamento: values.agendamento.format("DD/MM/YYYY"),
       nota_fiscal: values.nota_fiscal?.[0]?.name,
@@ -193,8 +193,6 @@ export default function ExtratoPage() {
             pageSize: tamanhoPagina,
             total: totalItens,
             showSizeChanger: true,
-            position: ["bottomRight"],
-            // Esta função roda quando o usuário clica nos números ou muda o tamanho
             onChange: (page, pageSize) => {
               setPaginaAtual(page);
               setTamanhoPagina(pageSize);

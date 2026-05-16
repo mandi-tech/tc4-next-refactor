@@ -4,7 +4,7 @@ import { GET_TRANSACOES } from "@/graphql/queries/transacoes";
 
 export const useTransacoes = () => {
   const [criarTransacaoMutation, { loading: creating, error: createError }] = useMutation<CriarTransacaoResponse, CriarTransacaoVariables>(CRIAR_TRANSACAO, {
-    refetchQueries: [{ query: GET_TRANSACOES }],
+    refetchQueries: ["GetTransacoes", "GetMetricas", "GetAnaliseExtrato", "GetSaidasPorCategoria"],
   });
 
   const criarTransacao = async (variables: CriarTransacaoVariables) => {

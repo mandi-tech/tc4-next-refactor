@@ -6,10 +6,11 @@ import {
   validarNomeCompleto,
 } from "@/libs/utils/validadores";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Divider, Form, Input, Alert, message } from "antd";
+import { Button, Divider, Form, Input, Alert, App } from "antd";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function NovoUsuarioPage() {
+  const {message} = App.useApp()
   const { registrar, registerLoading } = useAuth();
 
   const onFinish = async (values: any) => {

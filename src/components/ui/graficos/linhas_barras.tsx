@@ -67,8 +67,13 @@ export default function GraficoLinhasBarras({
                 border: "none",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
+              labelStyle={{ color: "black" }}
             />
-            <Legend />
+            <Legend
+              formatter={(value) => (
+                <span className="text-foreground">{value}</span>
+              )}
+            />
 
             {configs.map((config) => {
               if (config.type === "bar") {

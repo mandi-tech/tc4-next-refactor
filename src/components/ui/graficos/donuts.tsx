@@ -31,6 +31,13 @@ export default function GraficoDonuts({
   titulo,
   loading,
 }: DonutChartProps) {
+  const formattedData = data.map((item) => ({
+    ...item,
+    name: item.name
+      ? item.name.charAt(0).toUpperCase() + item.name.slice(1).toLowerCase()
+      : "",
+  }));
+
   return (
     <div
       className={`${className} w-full h-[400px] p-4 bg-secondaryBackground  rounded-xl border-border shadow-sm border`}
@@ -47,7 +54,7 @@ export default function GraficoDonuts({
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
-              data={data}
+              data={formattedData}
               cx="50%"
               cy="50%"
               innerRadius={65}
@@ -55,7 +62,7 @@ export default function GraficoDonuts({
               paddingAngle={5}
               dataKey="value"
             >
-              {data.map((_, index) => (
+              {formattedData.map((_, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={colors[index % colors.length]}
@@ -69,8 +76,15 @@ export default function GraficoDonuts({
                 border: "none",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
               }}
+              labelStyle={{ color: "black" }}
             />
-            <Legend verticalAlign="bottom" height={36} />
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              formatter={(value) => (
+                <span className="text-foreground">{value}</span>
+              )}
+            />
           </PieChart>
         </ResponsiveContainer>
       )}

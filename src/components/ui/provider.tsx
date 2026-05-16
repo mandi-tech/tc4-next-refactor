@@ -4,9 +4,17 @@ import { useState, useLayoutEffect, useCallback } from "react";
 import { ConfigProvider, theme as antdTheme } from "antd";
 import themeConfig from "@/styles/theme/theme";
 import { darkPalette, lightPalette } from "@/styles/theme/cores";
+import { App } from "antd";
+import { setStatic } from "@/libs/utils/antd-static";
 
 import { ApolloProvider } from "@apollo/client/react";
 import { client } from "@/libs/apollo-client";
+
+const StaticInitialization = () => {
+  const { message, notification, modal } = App.useApp();
+  setStatic(message, notification, modal);
+  return null;
+};
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
@@ -59,7 +67,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           },
         }}
       >
-        {children}
+        <App>
+          <StaticInitialization />
+          {children}
+        </App>
       </ConfigProvider>
     </ApolloProvider>
   );

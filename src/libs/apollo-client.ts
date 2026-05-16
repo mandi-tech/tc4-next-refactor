@@ -7,7 +7,7 @@ import {
 import { SetContextLink } from "@apollo/client/link/context";
 import { ErrorLink } from "@apollo/client/link/error";
 import { HttpLink } from "@apollo/client/link/http";
-import { notification } from "antd";
+import antdStatic from "./utils/antd-static";
 
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/graphql",
@@ -39,8 +39,8 @@ const errorLink = new ErrorLink(({ error }) => {
         }
       }
 
-      notification.error({
-        title: "Erro no GraphQL",
+      antdStatic.notification?.error({
+        message: "Erro no GraphQL",
         description: message,
         placement: "topRight",
       });
@@ -49,8 +49,8 @@ const errorLink = new ErrorLink(({ error }) => {
       );
     });
   } else {
-    notification.error({
-      title: "Erro de Rede",
+    antdStatic.notification?.error({
+      message: "Erro de Rede",
       description:
         "Não foi possível conectar ao servidor. Verifique sua conexão.",
       placement: "topRight",

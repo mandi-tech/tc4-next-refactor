@@ -3,6 +3,7 @@
 import {
   BarChartOutlined,
   FileTextOutlined,
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MoonOutlined,
@@ -13,6 +14,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSidebar } from "@/context/sidebar-context";
+import { useAuth } from "@/hooks/use-auth";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -34,6 +36,7 @@ export default function SidebarMenu() {
   const [collapsed, setCollapsed] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const { isOpen, setIsOpen, isMobile } = useSidebar();
+  const { logout } = useAuth();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -70,24 +73,40 @@ export default function SidebarMenu() {
         width={250}
         styles={{
           body: { padding: 0 },
-          header: { borderBottom: "1px solid var(--border)" },
+          header: {
+            borderBottom: "none",
+            backgroundColor: "var(--secondary-background)",
+          },
         }}
-        title={
-          <span className="text-azul font-bold tracking-tight">Bytebank</span>
-        }
         className="dark:bg-secondaryBackground"
       >
-        <div className="h-full bg-secondaryBackground px-2 pt-4 flex flex-col justify-between pb-10">
+        <div className="h-full bg-secondaryBackground px-2 pt-6 flex flex-col justify-between pb-10">
           <div>
+            <div className="px-4 mb-8">
+              <h1 className="text-2xl font-bold text-azul tracking-tight">
+                Bytebank
+              </h1>
+            </div>
             <Menu
               selectedKeys={[pathname]}
               mode="inline"
               items={items}
               className="border-none bg-transparent"
-              onClick={() => setDrawerOpen(false)}
+            />
+            <Menu
+              mode="inline"
+              items={[
+                {
+                  key: "logout",
+                  icon: <LogoutOutlined />,
+                  label: "Log Out",
+                  onClick: logout,
+                },
+              ]}
+              className="border-none bg-transparent mt-4"
             />
           </div>
-          <div className="px-4 flex items-center gap-3">
+          <div className="px-4 flex items-center gap-3 border-t border-border pt-6">
             <span className="text-sm text-foreground opacity-70">Tema</span>
             <Switch
               checked={isDark}
@@ -103,27 +122,63 @@ export default function SidebarMenu() {
 
   return (
     <div
-      className={`flex flex-col items-center h-screen bg-secondaryBackground px-2 shadow-xl transition-colors duration-300 ${collapsed ? "w-[80px]" : "w-[250px]"}`}
+      className={`flex flex-col items-center justify-between h-screen bg-secondaryBackground p-2 shadow-xl transition-colors duration-300 ${collapsed ? "w-[80px]" : "w-[250px]"}`}
     >
       {" "}
-      <div className="py-4 flex">
-        <Button type="primary" onClick={toggleCollapsed} className="mb-4">
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
+      <div className="w-full flex flex-col items-center">
+        <div
+          className={`py-8 flex items-center gap-3 w-full px-4 ${collapsed ? "justify-center" : "justify-between"}`}
+        >
+          {!collapsed && (
+            <h1 className="text-2xl font-bold text-azul tracking-tight whitespace-nowrap overflow-hidden transition-all duration-300">
+              Bytebank
+            </h1>
+          )}
+          <Button
+            type="text"
+            onClick={toggleCollapsed}
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            className="text-azul hover:!bg-azul/10 flex items-center justify-center"
+          />
+        </div>
+        <Menu
+          selectedKeys={[pathname]}
+          mode="inline"
+          inlineCollapsed={collapsed}
+          items={items}
+          className="border-none bg-transparent px-2"
+        />
       </div>
-      <Menu
-        selectedKeys={[pathname]}
-        mode="inline"
-        inlineCollapsed={collapsed}
-        items={items}
-        className="border-none bg-transparent"
-      />
-      <Switch
-        checked={isDark}
-        onChange={toggleTheme}
-        checkedChildren={<MoonOutlined />}
-        unCheckedChildren={<SunOutlined />}
-      />
+      <div className="w-full px-2 pb-6">
+        <Menu
+          mode="inline"
+          inlineCollapsed={collapsed}
+          items={[
+            {
+              key: "logout",
+              icon: <LogoutOutlined />,
+              label: "Log Out",
+              onClick: logout,
+            },
+          ]}
+          className="border-none bg-transparent"
+        />
+        <div
+          className={`flex items-center gap-3 px-4 mt-4 border-t border-border pt-6 ${collapsed ? "justify-center" : "justify-start"}`}
+        >
+          {!collapsed && (
+            <span className="text-sm text-foreground opacity-70 whitespace-nowrap">
+              Tema
+            </span>
+          )}
+          <Switch
+            checked={isDark}
+            onChange={toggleTheme}
+            checkedChildren={<MoonOutlined />}
+            unCheckedChildren={<SunOutlined />}
+          />
+        </div>
+      </div>
     </div>
   );
 }

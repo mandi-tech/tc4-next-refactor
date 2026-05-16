@@ -23,6 +23,12 @@ export const colunasTransacao = [
     title: "Categoria",
     dataIndex: "categoria",
     key: "categoria",
+    render: (categoria: string) => {
+      if (!categoria) return "";
+      return (
+        categoria.charAt(0).toUpperCase() + categoria.slice(1).toLowerCase()
+      );
+    },
   },
   {
     title: "Valor",

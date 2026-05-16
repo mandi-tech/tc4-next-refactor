@@ -69,11 +69,11 @@ export default function Filtros({
   return (
     <div className="flex flex-wrap justify-end gap-3 w-full items-center">
       {filtros.includes("tipo") && (
-        <Radio.Group buttonStyle="solid" value={tipo}>
-          <Radio.Button value="entrada" onClick={onRadioChange}>
+        <Radio.Group buttonStyle="solid" value={tipo} className="w-full md:w-[fit-content]">
+          <Radio.Button value="entrada" onClick={onRadioChange} className="w-[50%] md:w-[fit-content]">
             Entrada
           </Radio.Button>
-          <Radio.Button value="saida" onClick={onRadioChange}>
+          <Radio.Button value="saida" onClick={onRadioChange} className="w-[50%] md:w-[fit-content]">
             Saída
           </Radio.Button>
         </Radio.Group>
@@ -86,9 +86,9 @@ export default function Filtros({
           allowClear
           value={categoriaId}
           onChange={(val) => updateURL({ categoriaId: val })}
-          style={{ width: 200 }}
           loading={loadingCategorias}
           notFoundContent={loadingCategorias ? <Spin size="small" /> : null}
+          className="w-full md:w-[fit-content]"
         />
       )}
 
@@ -105,6 +105,7 @@ export default function Filtros({
               ]
               : null
           }
+          className="w-full md:w-[18vw]"
         />
       )}
     </div>
