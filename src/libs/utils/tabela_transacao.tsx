@@ -1,7 +1,6 @@
 import { Transacao } from "@/graphql/queries/transacoes";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
-import { iTransacao, tipoSaida } from "../types/iTransacoes";
 
 interface AcoesProps {
   onEdit: (record: Transacao) => void;

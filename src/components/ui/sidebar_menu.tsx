@@ -70,7 +70,7 @@ export default function SidebarMenu() {
         onClose={() => setIsOpen(false)}
         placement="left"
         closable={true}
-        width={250}
+        size={250}
         styles={{
           body: { padding: 0 },
           header: {

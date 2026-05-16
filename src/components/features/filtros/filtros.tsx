@@ -1,6 +1,5 @@
 "use client";
 
-import { tipoEntrada, tipoSaida } from "@/libs/types/iTransacoes";
 import { DatePicker, Radio, Select, Spin } from "antd";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import dayjs from "dayjs";

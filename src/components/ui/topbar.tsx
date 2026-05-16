@@ -7,6 +7,11 @@ import ModalTransacao from "../features/modals/modal_transacao";
 import { useTransacoes } from "@/hooks/use-transacoes";
 import { MenuOutlined } from "@ant-design/icons";
 import { useSidebar } from "@/context/sidebar-context";
+import {
+  parseValorNumerico,
+  getCurrentUser,
+  formatarDataApi,
+} from "@/libs/utils/transacoes_helper";
 
 export default function Topbar() {
   const {message} = App.useApp()
@@ -21,16 +26,9 @@ export default function Topbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        if (user?.nome) {
-          setNomeUsuario(user.nome);
-        }
-      } catch (err) {
-        console.error("Erro ao converter usuário do localStorage", err);
-      }
+    const user = getCurrentUser();
+    if (user?.nome) {
+      setNomeUsuario(user.nome);
     }
   }, []);
 
@@ -50,24 +48,28 @@ export default function Topbar() {
 
   const handleSaveNewTransacao = async (values: any) => {
     try {
-      const userStr = localStorage.getItem("user");
-      if (!userStr) {
+      const user = getCurrentUser();
+      if (!user) {
         message.error(
           "Usuário não encontrado. Por favor, faça login novamente.",
         );
         return;
       }
-      const user = JSON.parse(userStr);
+
+      const valorNumerico = parseValorNumerico(values.valor);
+
+      if (isNaN(valorNumerico)) {
+        message.error("Por favor, insira um valor numérico válido.");
+        return;
+      }
 
       await criarTransacao({
         usuarioId: user.id,
         tipo: tipoTransacao.toUpperCase(),
         descricao: values.descricao,
-        valor: values.valor,
+        valor: valorNumerico,
         categoria: values.categoria,
-        data_agendamento: values.agendamento
-          ? values.agendamento.format("DD/MM/YYYY")
-          : "",
+        data_agendamento: formatarDataApi(values.agendamento),
         nota_fiscal:
           values.nota_fiscal && values.nota_fiscal.length > 0
             ? values.nota_fiscal[0].name

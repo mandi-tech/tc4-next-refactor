@@ -25,6 +25,19 @@ import {
   DeletarTransacaoResponse,
   DeletarTransacaoVariables,
 } from "@/graphql/mutations/transacoes";
+import {
+  parseValorNumerico,
+  getCurrentUser,
+  formatarDataApi,
+} from "@/libs/utils/transacoes_helper";
+
+interface FormValues {
+  descricao: string;
+  valor: string | number;
+  categoria: string;
+  agendamento: any;
+  nota_fiscal?: { name: string }[];
+}
 
 export default function ExtratoPage() {
   const { notification } = App.useApp();
@@ -39,15 +52,8 @@ export default function ExtratoPage() {
   const [tamanhoPagina, setTamanhoPagina] = useState(10);
 
   useEffect(() => {
-    const userStr = localStorage.getItem("user");
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        if (user?.id) setUsuarioId(user.id);
-      } catch (e) {
-        console.error("Erro ao ler usuário do localStorage", e);
-      }
-    }
+    const user = getCurrentUser();
+    if (user?.id) setUsuarioId(user.id);
   }, []);
 
   const tipo = searchParams.get("tipo")?.toUpperCase();
@@ -138,15 +144,25 @@ export default function ExtratoPage() {
     deletarTransacao({ variables: { id } });
   };
 
-  const handleSaveTransacao = (values: any) => {
+  const handleSaveTransacao = (values: FormValues) => {
+    const valorNumerico = parseValorNumerico(values.valor);
+
+    if (isNaN(valorNumerico)) {
+      notification.error({
+        message: "Valor inválido",
+        description: "Por favor, insira um valor numérico válido.",
+      });
+      return;
+    }
+
     const commonVariables = {
       tipo: transacaoSelecionada
         ? transacaoSelecionada.tipo
         : searchParams.get("tipo")?.toUpperCase() || "ENTRADA",
       descricao: values.descricao,
-      valor: parseFloat(values.valor),
+      valor: valorNumerico,
       categoria: values.categoria,
-      data_agendamento: values.agendamento.format("DD/MM/YYYY"),
+      data_agendamento: formatarDataApi(values.agendamento),
       nota_fiscal: values.nota_fiscal?.[0]?.name,
     };
 

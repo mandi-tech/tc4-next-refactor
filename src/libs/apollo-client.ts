@@ -39,9 +39,13 @@ const errorLink = new ErrorLink(({ error }) => {
         }
       }
 
+      const sanitizedMessage = message.includes("Internal server error")
+        ? "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
+        : message;
+
       antdStatic.notification?.error({
         message: "Erro no GraphQL",
-        description: message,
+        description: sanitizedMessage,
         placement: "topRight",
       });
       console.error(
