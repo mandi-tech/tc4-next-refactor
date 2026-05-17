@@ -184,7 +184,7 @@ export default function Home() {
                   ...(dataFinal && { data_final: dataFinal }),
                 },
               }}
-              className="text-lavanda text-md font-semibold flex gap-2 items-center"
+              className="!text-lavanda text-md font-semibold flex gap-2 items-center"
             >
               <p className="hidden md:contents">Visualizar extrato</p>
               <ArrowRightOutlined />
