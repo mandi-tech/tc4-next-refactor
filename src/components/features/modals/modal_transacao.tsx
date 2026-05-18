@@ -6,9 +6,11 @@ import {
   Modal,
   Radio,
   InputNumber,
+  Upload,
 } from "antd";
 import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
+import antdStatic from "@/libs/utils/antd-static";
 import { tipoEntrada, tipoSaida } from "@/libs/types/iTransacoes";
 import { iModalTransacao } from "@/libs/types/iModal";
 import { useEffect, useMemo } from "react";
@@ -47,6 +49,17 @@ export default function ModalTransacao(props: iModalTransacao) {
         agendamento: props.initialData.data_agendamento
           ? dayjs(props.initialData.data_agendamento, "DD/MM/YYYY")
           : null,
+        nota_fiscal: props.initialData.nota_fiscal && props.initialData.nota_fiscal.startsWith("data:image")
+          ? [
+              {
+                uid: "-1",
+                name: "nota_fiscal_atual",
+                status: "done",
+                url: props.initialData.nota_fiscal,
+                thumbUrl: props.initialData.nota_fiscal,
+              },
+            ]
+          : props.initialData.nota_fiscal ? [{ uid: "-1", name: props.initialData.nota_fiscal, status: "done" }] : undefined,
       });
     } else {
       form.resetFields();
@@ -159,7 +172,27 @@ export default function ModalTransacao(props: iModalTransacao) {
           <Dragger
             name="nota_fiscal"
             multiple={false}
-            beforeUpload={() => false}
+            accept="image/png, image/jpeg, image/svg+xml"
+            beforeUpload={(file) => {
+              const isAllowedFormat =
+                file.type === "image/jpeg" ||
+                file.type === "image/png" ||
+                file.type === "image/svg+xml";
+              if (!isAllowedFormat) {
+                antdStatic.message.error(
+                  "Você só pode fazer upload de arquivos JPG/PNG/SVG!"
+                );
+                return Upload.LIST_IGNORE;
+              }
+              const isLt2M = file.size / 1024 / 1024 < 2;
+              if (!isLt2M) {
+                antdStatic.message.error("A imagem deve ser menor que 2MB!");
+                return Upload.LIST_IGNORE;
+              }
+              return false;
+            }}
+            listType="picture"
+            maxCount={1}
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
