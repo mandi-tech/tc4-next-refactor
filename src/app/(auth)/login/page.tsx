@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function LoginPage() {
-  const { login, loading } = useAuth();
+  const { login, loginLoading } = useAuth();
 
   const onFinish = (values: any) => {
     login(values.email, values.senha);
@@ -42,7 +42,7 @@ export default function LoginPage() {
               type="primary"
               htmlType="submit"
               className="w-full h-12 text-lg font-semibold"
-              loading={loading}
+              loading={loginLoading}
             >
               Entrar
             </Button>
