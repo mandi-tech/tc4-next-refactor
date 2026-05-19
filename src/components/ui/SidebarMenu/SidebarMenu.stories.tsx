@@ -1,49 +1,88 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import SidebarMenu from "./SidebarMenu";
 import { SidebarProvider } from "@/context/sidebar-context";
+import { ConfigProvider, App as AntdApp } from "antd";
+import theme from "@/styles/theme/theme";
+import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
+
+import { getDynamicThemeStyles } from "@/styles/theme/colors/colors";
+import { ApolloProvider } from "@apollo/client/react";
+
+const httpLink = createHttpLink({
+  uri: "http://localhost:3000/api/graphql",
+});
+
+const mockApolloClient = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache(),
+});
 
 const meta: Meta<typeof SidebarMenu> = {
-    title: "Components/UI/SidebarMenu",
-    component: SidebarMenu,
-    parameters: {
-        layout: "fullscreen",
-        nextjs: {
-            appDirectory: true,
-            navigation: {
-            pathname: "/",
-        },
-        },
+  title: "Components/UI/SidebarMenu",
+  component: SidebarMenu,
+  parameters: {
+    layout: "fullscreen",
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: "/",
+      },
     },
-    decorators: [
-        (Story) => (
-            <SidebarProvider>
-                {/* Envelopado em uma div de tela cheia para simular o comportamento real no app */}
-                <div className="h-screen w-full flex bg-background text-foreground">
-                    <Story />
-                    <div className="p-xl flex-1 bg-background border-l border-border">
-                        <h2 className="text-xl font-bold mb-md">Application Content Area</h2>
-                        <p className="text-foreground-secondary text-sm">
-                            This space simulates where the pages (Dashboard, Statement) are rendered alongside the Sidebar.
-                        </p>
-                    </div>
+  },
+  decorators: [
+    (Story) => {
+      useEffect(() => {
+        const savedTheme = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const isDark = savedTheme === "dark" || (!savedTheme && prefersDark);
+
+        const root = document.documentElement;
+        if (isDark) {
+          root.classList.add("dark");
+          root.setAttribute("data-theme", "dark");
+        } else {
+          root.classList.remove("dark");
+          root.setAttribute("data-theme", "light");
+        }
+      }, []);
+
+      return (
+        <ApolloProvider client={mockApolloClient}>
+          <style dangerouslySetInnerHTML={{ __html: getDynamicThemeStyles() }} />
+
+          <ConfigProvider theme={theme}>
+            <AntdApp>
+              <SidebarProvider>
+                <div className="bg-background text-foreground flex h-screen w-full">
+                  <Story />
+                  <div className="p-xl bg-background border-border flex-1 border-l">
+                    <h1 className="text-primary mb-md text-2xl font-bold tracking-tight">
+                      ByteBank Dashboard
+                    </h1>
+                    <h2 className="mb-md text-xl font-bold text-foreground">Application Content Area</h2>
+                    <p className="text-foreground-secondary text-sm">
+                      Este espaço simula onde as páginas são renderizadas ao lado do Menu.
+                    </p>
+                  </div>
                 </div>
-            </SidebarProvider>
-        ),
-    ],
+              </SidebarProvider>
+            </AntdApp>
+          </ConfigProvider>
+        </ApolloProvider>
+      );
+    },
+  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof SidebarMenu>;
 
-// 1. Cenário Padrão: Sidebar em visualização de Desktop
 export const Desktop: Story = {};
-
-// 2. Cenário Mobile: Simula a visualização em telas menores (Drawer)
 export const Mobile: Story = {
-    parameters: {
-        viewport: {
-            defaultViewport: "mobile1",
-        },
+  parameters: {
+    viewport: {
+      defaultViewport: "mobile1",
     },
+  },
 };

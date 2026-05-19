@@ -16,11 +16,11 @@ export default function Home() {
   const { metricas, chart, donut, transacoes, filtrosData } = useDashboard();
 
   return (
-    <div className="flex flex-col gap-xl">
+    <div className="gap-xl flex flex-col">
       <Filtros filtros={["periodo"]} />
 
       {/* Grid de Cards de Indicadores Financeiros */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-md w-full">
+      <section className="gap-md grid w-full grid-cols-1 lg:grid-cols-3">
         <Card
           icon={<BankOutlined />}
           description="Saldo Total"
@@ -48,7 +48,7 @@ export default function Home() {
       </section>
 
       {/* Grid Central de Gráficos Analíticos */}
-      <section className="grid grid-cols-8 gap-md">
+      <section className="gap-md grid grid-cols-8">
         <ComposedChart
           data={chart.data}
           configs={chart.configs}
@@ -66,9 +66,9 @@ export default function Home() {
       </section>
 
       {/* Seção de Resumo de Atividades Recentes */}
-      <div className="flex flex-col gap-sm">
-        <div className="flex justify-between items-center">
-          <h3 className="text-xl font-semibold text-foreground tracking-tight">
+      <div className="gap-sm flex flex-col">
+        <div className="flex items-center justify-between">
+          <h3 className="text-foreground text-xl font-semibold tracking-tight">
             Transações Recentes
           </h3>
           <Link
@@ -79,14 +79,14 @@ export default function Home() {
                 ...(filtrosData.dataFinal && { data_final: filtrosData.dataFinal }),
               },
             }}
-            className="text-primary hover:text-primary-hover text-sm font-semibold flex gap-xs items-center transition-colors"
+            className="text-primary hover:text-primary-hover gap-xs flex items-center text-sm font-semibold transition-colors"
           >
             <span className="hidden md:inline">Visualizar extrato</span>
             <ArrowRightOutlined className="text-xs" />
           </Link>
         </div>
 
-        <div className="w-full overflow-x-auto border border-border shadow-sm rounded-xl bg-background-secondary">
+        <div className="border-border bg-background-secondary w-full overflow-x-auto rounded-xl border shadow-sm">
           <Table
             columns={colunasTransacao}
             dataSource={transacoes.recentes}

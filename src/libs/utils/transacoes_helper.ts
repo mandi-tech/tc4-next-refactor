@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 export const parseValorNumerico = (valor: string | number): number => {
   if (typeof valor === "number") return valor;
   if (!valor) return NaN;
-  
+
   // Replace comma with dot for parsing
   const cleanValue = valor.replace(",", ".");
   return parseFloat(cleanValue);

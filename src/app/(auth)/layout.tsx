@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import { manrope } from "@/styles/fonts";
+import { manrope } from "@/styles/theme/typhography/typhography";
 import Providers from "@/components/ui/provider";
 
 export const metadata: Metadata = {
@@ -18,7 +18,7 @@ export default function AuthLayout({
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
       </head>
-      <body className="antialiased bg-background text-foreground font-sans">
+      <body className="bg-background text-foreground font-sans antialiased">
         <Providers>
           <main>{children}</main>
         </Providers>

@@ -2,64 +2,60 @@
 
 import React from "react";
 import { Skeleton } from "antd";
-import { CardProps } from "@/libs/types/cards";
+import { CardProps } from "./types";
 
 interface CardComponentProps extends Omit<CardProps, "border"> {
-    border?: boolean | string;
+  border?: boolean | string;
 }
 
 export default function Card({
-    icon,
-    description,
-    value,
-    loading = false,
-    footer,
-    color = "foreground",
-    backgroundColor = "background-secondary",
-    border = false,
+  icon,
+  description,
+  value,
+  loading = false,
+  footer,
+  color = "foreground",
+  backgroundColor = "background-secondary",
+  border = false,
 }: CardComponentProps) {
-    const getBorderStyles = () => {
-        if (!border) return { borderColor: "transparent" };
-        if (typeof border === "string") return { borderColor: `var(--color-${border})` };
-        return { borderColor: "var(--color-border)" };
-    };
+  const getBorderStyles = () => {
+    if (!border) return { borderColor: "transparent" };
+    if (typeof border === "string") return { borderColor: `var(--color-${border})` };
+    return { borderColor: "var(--color-border)" };
+  };
 
-    const dynamicStyle = {
-        color: `var(--color-${color})`,
-        backgroundColor: `var(--color-${backgroundColor})`,
-        ...getBorderStyles(),
-    };
+  const dynamicStyle = {
+    color: `var(--color-${color})`,
+    backgroundColor: `var(--color-${backgroundColor})`,
+    ...getBorderStyles(),
+  };
 
-    return (
-        <div
-        style={dynamicStyle}
-        className="flex flex-col gap-md rounded-xl p-lg shadow-md border transition-all duration-200"
-        >
-        {icon && (
-            <span className="w-fit px-xs py-xxs text-2xl bg-current/10 backdrop-blur-sm rounded-md flex items-center justify-center">
-            {icon}
-            </span>
+  return (
+    <div
+      style={dynamicStyle}
+      className="gap-md p-lg flex flex-col rounded-xl border shadow-md transition-all duration-200"
+    >
+      {icon && (
+        <span className="px-xs py-xxs flex w-fit items-center justify-center rounded-md bg-current/10 text-2xl backdrop-blur-sm">
+          {icon}
+        </span>
+      )}
+
+      {/* Conteúdo Central */}
+      <div className="gap-xxs flex flex-col">
+        <p className="text-sm font-medium opacity-75">{description}</p>
+
+        {loading ? (
+          <Skeleton.Button active size="large" className="mt-xs w-full" block />
+        ) : (
+          <h1 className="text-3xl font-bold tracking-tight">{value}</h1>
         )}
+      </div>
 
-        {/* Conteúdo Central */}
-        <div className="flex flex-col gap-xxs">
-            <p className="opacity-75 text-sm font-medium">{description}</p>
-
-            {loading ? (
-            <Skeleton.Button active size="large" className="w-full mt-xs" block />
-            ) : (
-            <h1 className="text-3xl font-bold tracking-tight">
-                {value}
-            </h1>
-            )}
-        </div>
-
-        {/* Footer Opcional */}
-        {footer && (
-            <div className="text-xs opacity-80 mt-auto border-t border-border/40 pt-xs">
-            {footer}
-            </div>
-        )}
-        </div>
-    );
+      {/* Footer Opcional */}
+      {footer && (
+        <div className="border-border/40 pt-xs mt-auto border-t text-xs opacity-80">{footer}</div>
+      )}
+    </div>
+  );
 }

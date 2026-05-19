@@ -1,17 +1,15 @@
 "use client";
 
-import RegisterForm from "@/components/auth/RegisterForm/RegisterForm";
+import RegisterForm from "@/components/features/auth/RegisterForm/RegisterForm";
 import React from "react";
 
 export default function RegisterPage() {
   return (
-    <section className="w-full h-screen flex items-center justify-center bg-background text-foreground px-md">
-      <div className="w-full sm:w-[480px] flex flex-col items-stretch gap-lg p-xl rounded-xl shadow-md bg-background-secondary border border-border">
-        <header className="flex flex-col gap-xxs text-center">
-          <h1 className="font-bold text-3xl tracking-tight text-foreground">
-            Crie uma conta
-          </h1>
-          <p className="text-sm text-foreground-secondary">
+    <section className="bg-background text-foreground px-md flex h-screen w-full items-center justify-center">
+      <div className="gap-lg p-xl bg-background-secondary border-border flex w-full flex-col items-stretch rounded-xl border shadow-md sm:w-[480px]">
+        <header className="gap-xxs flex flex-col text-center">
+          <h1 className="text-foreground text-3xl font-bold tracking-tight">Crie uma conta</h1>
+          <p className="text-foreground-secondary text-sm">
             Comece a gerenciar suas finanças de forma inteligente
           </p>
         </header>

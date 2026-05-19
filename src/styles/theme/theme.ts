@@ -1,17 +1,14 @@
 import type { ThemeConfig } from "antd";
-import { theme as antdTheme } from "antd"; 
-import { lightPalette } from "./colors";
-import { borderRadius } from "./borderRadius";
+import { theme as antdTheme } from "antd";
+import { lightPalette } from "./colors/colors";
+import { borderRadius } from "./borderRadius/borderRadius";
 
-// Como o Ant Design lê strings de pixel puro ("8px") ou números (8), 
-// convertemos o valor do token removendo o "px" para o padrão do Antd.
-const baseRadius = parseInt(borderRadius.lg.replace("px", "")) || 8; // pega o '8px' e vira 8
+const baseRadius = parseInt(borderRadius.lg.replace("px", "")) || 8;
 
 const theme: ThemeConfig = {
   cssVar: { prefix: "meu-app" },
   algorithm: antdTheme.defaultAlgorithm,
 
-  // Design Tokens Globais do Ant Design mapeados para a nossa paleta semântica
   token: {
     colorPrimary: "var(--color-primary)",
     colorSuccess: "var(--color-success)",
@@ -22,7 +19,6 @@ const theme: ThemeConfig = {
     borderRadius: baseRadius,
   },
 
-  // Customização específica por componente do Antd
   components: {
     Menu: {
       itemBg: "transparent",

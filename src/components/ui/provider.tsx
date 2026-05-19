@@ -3,7 +3,7 @@
 import React, { useState, useLayoutEffect, useCallback } from "react";
 import { ConfigProvider, theme as antdTheme, App } from "antd";
 import themeConfig from "@/styles/theme/theme";
-import { darkPalette, lightPalette } from "@/styles/theme/colors";
+import { darkPalette, lightPalette } from "@/styles/theme/colors/colors";
 import { setStatic } from "@/libs/utils/antd-static";
 import { ApolloProvider } from "@apollo/client/react";
 import { client } from "@/libs/apollo-client";
@@ -48,9 +48,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <ConfigProvider
         theme={{
           ...themeConfig,
-          algorithm: isDark
-            ? antdTheme.darkAlgorithm
-            : antdTheme.defaultAlgorithm,
+          algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
           token: {
             ...themeConfig.token,
             colorPrimary: currentPalette.primary,

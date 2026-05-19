@@ -31,10 +31,10 @@ export default function ExtratoPage() {
   });
 
   return (
-    <div className="flex flex-col gap-xl">
+    <div className="gap-xl flex flex-col">
       <Filtros />
-      
-      <div className="w-full overflow-x-auto border border-border shadow-sm rounded-xl bg-background-secondary">
+
+      <div className="border-border bg-background-secondary w-full overflow-x-auto rounded-xl border shadow-sm">
         <Table
           columns={colunas}
           dataSource={listaTransacoes}
@@ -59,7 +59,9 @@ export default function ExtratoPage() {
         handleOk={handleSaveTransacao}
         handleCancel={handleCloseModal}
         tipo={transacaoSelecionada ? "edicao" : "novo"}
-        tipoTransacao={(transacaoSelecionada?.tipo?.toLowerCase() as "entrada" | "saida") || "entrada"}
+        tipoTransacao={
+          (transacaoSelecionada?.tipo?.toLowerCase() as "entrada" | "saida") || "entrada"
+        }
         initialData={transacaoSelecionada}
         loading={mutating}
       />

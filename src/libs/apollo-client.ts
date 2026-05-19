@@ -1,9 +1,4 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloLink,
-  CombinedGraphQLErrors,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloLink, CombinedGraphQLErrors } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import { ErrorLink } from "@apollo/client/link/error";
 import { HttpLink } from "@apollo/client/link/http";
@@ -14,8 +9,7 @@ const httpLink = new HttpLink({
 });
 
 const authLink = new SetContextLink((prevContext) => {
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   return {
     headers: {
       ...prevContext.headers,
@@ -28,10 +22,7 @@ const errorLink = new ErrorLink(({ error }) => {
   if (CombinedGraphQLErrors.is(error)) {
     error.errors.forEach(({ message, locations, path }) => {
       // Check for expiration or unauthorized errors
-      if (
-        message.includes("Sessão expirada") ||
-        message.includes("Não autorizado")
-      ) {
+      if (message.includes("Sessão expirada") || message.includes("Não autorizado")) {
         if (typeof window !== "undefined") {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
@@ -48,15 +39,12 @@ const errorLink = new ErrorLink(({ error }) => {
         description: sanitizedMessage,
         placement: "topRight",
       });
-      console.error(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
-      );
+      console.error(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
     });
   } else {
     antdStatic.notification?.error({
       title: "Erro de Rede",
-      description:
-        "Não foi possível conectar ao servidor. Verifique sua conexão.",
+      description: "Não foi possível conectar ao servidor. Verifique sua conexão.",
       placement: "topRight",
     });
     console.error(`[Network error]: ${error}`);

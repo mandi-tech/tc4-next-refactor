@@ -23,7 +23,11 @@ export const GET_ANALISE_EXTRATO = gql`
 
 export const GET_SAIDAS_POR_CATEGORIA = gql`
   query GetSaidasPorCategoria($usuarioId: ID!, $data_inicial: String, $data_final: String) {
-    saidasPorCategoria(usuarioId: $usuarioId, data_inicial: $data_inicial, data_final: $data_final) {
+    saidasPorCategoria(
+      usuarioId: $usuarioId
+      data_inicial: $data_inicial
+      data_final: $data_final
+    ) {
       categoria
       quantidade
       porcentagem
