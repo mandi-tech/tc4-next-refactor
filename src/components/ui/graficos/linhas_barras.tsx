@@ -1,3 +1,4 @@
+import { CustomChartProps } from "@/libs/types/iGraficos";
 import { Skeleton } from "antd";
 import {
   ResponsiveContainer,
@@ -11,25 +12,6 @@ import {
   Legend,
 } from "recharts";
 
-export interface ChartData {
-  [key: string]: any;
-}
-
-export interface ChartConfig {
-  key: string; // O nome da propriedade no objeto de dados
-  label: string; // O nome que aparecerá na legenda
-  color: string; // Cor (Hex, RGBA ou variável CSS)
-  type: "line" | "bar";
-}
-
-export interface CustomChartProps {
-  data: ChartData[];
-  configs: ChartConfig[];
-  xAxisKey: string;
-  titulo?: string;
-  className?: string;
-  loading?: boolean;
-}
 
 export default function GraficoLinhasBarras({
   data,
