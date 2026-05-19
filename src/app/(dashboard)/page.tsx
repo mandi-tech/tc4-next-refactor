@@ -1,11 +1,6 @@
 "use client";
 
 import Filtros from "@/components/features/filtros/filtros";
-import Card from "@/components/ui/card";
-import GraficoDonuts from "@/components/ui/graficos/donuts";
-import GraficoLinhasBarras, {
-  ChartConfig,
-} from "@/components/ui/graficos/linhas_barras";
 import { colunasTransacao } from "@/libs/utils/tabela_transacao";
 import {
   ArrowRightOutlined,
@@ -31,6 +26,9 @@ import {
   TransacoesVariables,
 } from "@/graphql/queries/transacoes";
 import { useSearchParams } from "next/navigation";
+import Card from "@/components/ui/Card/Card";
+import ComposedChart, { ChartConfig } from "@/components/ui/Charts/ComposedChart/ComposedChart";
+import DonutChart from "@/components/ui/Charts/DonutChart/DonutChart";
 
 export default function Home() {
   const searchParams = useSearchParams();
@@ -131,43 +129,43 @@ export default function Home() {
         <Filtros filtros={["periodo"]} />
         <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
           <Card
-            icone={<BankOutlined />}
-            descricao="Saldo Total"
-            valor={formatCurrency(metricasData?.metricas.saldo || 0)}
+            icon={<BankOutlined />}
+            description="Saldo Total"
+            value={formatCurrency(metricasData?.metricas.saldo || 0)}
             backgroundColor="azul"
             color="cinza"
             loading={loadingMetricas}
           />
           <Card
-            icone={<RiseOutlined />}
-            descricao="Receita Mensal"
-            valor={formatCurrency(metricasData?.metricas.total_entrada || 0)}
+            icon={<RiseOutlined />}
+            description="Receita Mensal"
+            value={formatCurrency(metricasData?.metricas.total_entrada || 0)}
             backgroundColor="verde"
             color="branco"
             loading={loadingMetricas}
           />
           <Card
-            icone={<FallOutlined />}
-            descricao="Despesa Mensal"
-            valor={formatCurrency(metricasData?.metricas.total_saida || 0)}
+            icon={<FallOutlined />}
+            description="Despesa Mensal"
+            value={formatCurrency(metricasData?.metricas.total_saida || 0)}
             backgroundColor="rosa"
             color="branco"
             loading={loadingMetricas}
           />
         </section>
         <section className="grid grid-cols-8 gap-6">
-          <GraficoLinhasBarras
+          <ComposedChart
             data={chartData}
             configs={chartConfigs}
             xAxisKey="mes"
-            titulo="Análise Financeira Diária"
+            title="Análise Financeira Diária"
             className="col-span-8 xl:col-span-5"
             loading={loadingAnalise}
           />
-          <GraficoDonuts
+          <DonutChart
             data={donutData}
             className="col-span-8 xl:col-span-3"
-            titulo="Distribuição de Gastos por Categoria"
+            title="Distribuição de Gastos por Categoria"
             loading={loadingCategorias}
           />
         </section>

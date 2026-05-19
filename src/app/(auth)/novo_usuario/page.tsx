@@ -1,117 +1,153 @@
 "use client";
 
+import React from "react";
+import { Divider, Form, Input, Alert, App } from "antd";
+import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
+import Button from "@/components/ui/Button/Button";
+
 import {
   validarEmail,
   validarSenha,
   validarNomeCompleto,
 } from "@/libs/utils/validadores";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Divider, Form, Input, Alert, App } from "antd";
-import { useAuth } from "@/hooks/use-auth";
 
-export default function NovoUsuarioPage() {
-  const {message} = App.useApp()
-  const { registrar, registerLoading } = useAuth();
+interface RegisterValues {
+  name: string;
+  email: string;
+  password: string;
+}
 
-  const onFinish = async (values: any) => {
+export default function RegisterPage() {
+  const { message } = App.useApp();
+  const { register, registerLoading } = useAuth();
+
+  const handleFinish = async (values: RegisterValues) => {
     try {
-      await registrar(values.nome, values.email, values.senha);
-      message.success("Usuário criado com sucesso! Faça login para continuar.");
+      await register(values.name, values.email, values.password);
+      message.success("Account created successfully! Please sign in to continue.");
     } catch (err: any) {
-      message.error(err.message || "Erro ao criar usuário.");
+      message.error(err.message || "An error occurred while creating your account.");
     }
   };
 
   return (
-    <section className="w-full h-screen flex items-center justify-center">
-      <div className="w-[30%] flex flex-col items-center gap-6  px-10 py-15 rounded-lg shadow-lg">
-        <h1 className="font-bold text-3xl">Novo usuário</h1>
+    <section className="w-full h-screen flex items-center justify-center bg-background text-foreground px-md">
+      <div className="w-full sm:w-[480px] flex flex-col items-stretch gap-lg p-xl rounded-xl shadow-lg bg-background-secondary border border-border">
+        
+        <h1 className="font-bold text-3xl tracking-tight text-center">
+          Crie uma conta
+        </h1>
+
         <Form
           layout="vertical"
-          className="w-full gap-2 items-center justify-center"
-          onFinish={onFinish}
+          className="w-full"
+          onFinish={handleFinish}
+          requiredMark={false}
         >
+          {/* Campo de Nome */}
           <Form.Item
             label="Nome completo"
-            name="nome"
+            name="name"
             rules={[
-              { required: true, message: "Por favor, insira um nome válido." },
+              { required: true, message: "Por favor, insira seu nome completo." },
               {
                 validator: (_, value) =>
                   validarNomeCompleto(value)
                     ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Por favor, insira um nome válido."),
-                      ),
+                    : Promise.reject(new Error("Por favor, insira um nome completo válido.")),
               },
             ]}
           >
-            <Input />
+            <Input size="large" placeholder="John Doe" className="h-10 w-full" />
           </Form.Item>
+
+          {/* Campo de Email */}
           <Form.Item
-            label="Email"
+            label="E-mail"
             name="email"
             rules={[
-              { required: true, message: "Por favor, insira um email." },
+              { required: true, message: "Por favor, insira seu e-mail." },
               {
                 validator: (_, value) =>
                   validarEmail(value)
                     ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Por favor, insira um email válido."),
-                      ),
+                    : Promise.reject(new Error("Por favor, insira um endereço de e-mail válido.")),
               },
             ]}
           >
-            <Input />
+            <Input size="large" placeholder="seu@email.com" className="h-10 w-full" />
           </Form.Item>
-          <Divider />
+
+          <Divider className="my-md" />
+
+          {/* Banner de Instruções de Segurança da Senha */}
           <Alert
-            title={
-              <h5 className="text-bold text-md">Regras para criar senha</h5>
-            }
+            title={<h5 className="font-bold text-sm">Password requirements</h5>}
             description={
-              <ul className="text-xs">
-                <li>Deve ter pelo menos 6 dígitos</li>
-                <li>Deve conter números</li>
+              <ul className="list-disc pl-sm text-xs flex flex-col gap-xxs mt-xxs">
+                <li>Deve conter pelo menos 6 caracteres</li>
+                <li>Deve conter pelo menos um número</li>
                 <li>Deve conter pelo menos uma letra maiúscula</li>
                 <li>Deve conter pelo menos um caractere especial</li>
               </ul>
             }
             type="info"
             showIcon
-            className="mb-2!"
+            className="mb-md"
           />
+
+          {/* Campo de Senha */}
           <Form.Item
             label="Senha"
-            name="senha"
+            name="password"
             rules={[
-              { required: true, message: "Por favor, insira a senha." },
+              { required: true, message: "Por favor, insira sua senha." },
               {
                 validator: (_, value) =>
                   validarSenha(value)
                     ? Promise.resolve()
                     : Promise.reject(
                         new Error(
-                          "A senha deve ter 6 dígitos, maiúscula, minúscula, número e caractere especial.",
+                          "Sua senha deve atender aos requisitos de segurança.",
                         ),
                       ),
               },
             ]}
           >
             <Input.Password
-              type="password"
+              size="large"
+              placeholder="Crie uma senha segura"
+              className="h-10 w-full"
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }
             />
           </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full" loading={registerLoading}>
+          {/* Botão de Cadastro */}
+          <Form.Item className="mt-lg mb-xs">
+            <Button
+              htmlType="submit"
+              fullWidth
+              loading={registerLoading}
+              className="text-base"
+            >
               Cadastrar
             </Button>
           </Form.Item>
+
+          {/* Link de retorno para a tela de Login */}
+          <div className="text-center text-sm text-foreground-secondary mt-sm">
+            <span>Já tem uma conta? </span>
+            <Link 
+              href="/login" 
+              className="text-primary font-medium hover:underline transition-colors whitespace-nowrap"
+            >
+              Faça login aqui!
+            </Link>
+          </div>
         </Form>
       </div>
     </section>

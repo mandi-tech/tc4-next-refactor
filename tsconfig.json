@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/styles/theme/colors.js", "src/styles/theme/shadows.js", "src/styles/theme/borderRadius.js", "src/styles/theme/spacing.js"  ],
   "exclude": ["node_modules"]
 }

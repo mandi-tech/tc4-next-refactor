@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "../../styles/globals.css";
 import { manrope } from "@/styles/fonts";
-import SidebarMenu from "@/components/ui/sidebar_menu";
-import Topbar from "@/components/ui/topbar";
 import Providers from "@/components/ui/provider";
 import { SidebarProvider } from "@/context/sidebar-context";
 
@@ -12,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 import AuthGuard from "@/components/auth/auth-guard";
+import SidebarMenu from "@/components/ui/SidebarMenu/SidebarMenu";
+import Topbar from "@/components/ui/Topbar/Topbar";
 
 export default function RootLayout({
   children,

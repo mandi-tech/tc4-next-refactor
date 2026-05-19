@@ -1,0 +1,9 @@
+import { Styles } from "./styles";
+
+export interface CardProps extends Styles {
+    footer?: React.ReactNode;
+    icon: React.ReactNode;  
+    description: string;    
+    value: string | number; 
+    loading?: boolean;
+}

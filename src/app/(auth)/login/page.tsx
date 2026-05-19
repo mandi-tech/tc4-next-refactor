@@ -1,57 +1,80 @@
 "use client";
 
-import { Button, Form, Input } from "antd";
+import React from "react";
+import { Form, Input } from "antd";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
+import Button from "@/components/ui/Button/Button";
+
+interface LoginValues {
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
-  const { login, loading } = useAuth();
+  const { login, loginLoading } = useAuth();
 
-  const onFinish = (values: any) => {
-    login(values.email, values.senha);
+  const handleFinish = (values: LoginValues) => {
+    login(values.email, values.password);
   };
 
   return (
-    <section className="w-full h-screen flex items-center justify-center">
-      <div className="w-full max-w-md flex flex-col items-center gap-6 px-10 py-12 rounded-lg shadow-lg bg-white dark:bg-zinc-900">
-        <h1 className="font-bold text-5xl text-blue-600">ByteBank</h1>
+    <section className="w-full h-screen flex items-center justify-center bg-background text-foreground px-md">
+      <div className="w-full sm:w-[480px] flex flex-col items-stretch gap-lg p-xl rounded-xl shadow-lg bg-background-secondary border border-border">
+        
+        {/* Título */}
+        <h1 className="font-bold text-5xl text-primary tracking-tight text-center mb-xs">
+          ByteBank
+        </h1>
+
         <Form
           layout="vertical"
           className="w-full"
-          onFinish={onFinish}
+          onFinish={handleFinish}
+          requiredMark={false}
         >
+          {/* Campo de Email */}
           <Form.Item
-            label="Email"
+            label="E-mail"
             name="email"
             rules={[
-              { required: true, message: "Por favor, insira um email válido." },
-              { type: "email", message: "O formato do email é inválido." },
+              { required: true, message: "Por favor, insira seu e-mail." },
+              { type: "email", message: "O formato do e-mail é inválido." },
             ]}
           >
-            <Input size="large" placeholder="seu@email.com" />
+            <Input size="large" placeholder="seu@email.com" className="h-10 w-full" />
           </Form.Item>
+
+          {/* Campo de Senha */}
           <Form.Item
             label="Senha"
-            name="senha"
-            rules={[{ required: true, message: "Por favor, insira a senha." }]}
+            name="password"
+            rules={[{ required: true, message: "Por favor, insira sua senha." }]}
           >
-            <Input.Password size="large" placeholder="Sua senha" />
+            <Input.Password size="large" placeholder="Sua senha" className="h-10 w-full" />
           </Form.Item>
-          <Form.Item>
+
+          {/* Botão de Submit */}
+          <Form.Item className="mt-lg mb-xs">
             <Button
-              type="primary"
               htmlType="submit"
-              className="w-full h-12 text-lg font-semibold"
-              loading={loading}
+              fullWidth
+              loading={loginLoading}
+              className="text-base"
             >
               Entrar
             </Button>
           </Form.Item>
-          <div className="text-center">
-            <span>
-              Não possui uma conta?
-              <Link href={"/novo_usuario"} className="text-blue-600 hover:underline"> Crie aqui!</Link>
-            </span>
+
+          {/* Link para criar conta */}
+          <div className="text-center text-sm text-foreground-secondary mt-sm">
+            <span>Não tem uma conta? </span>
+            <Link 
+              href="/novo_usuario" 
+              className="text-primary font-medium hover:underline transition-colors whitespace-nowrap"
+            >
+              Cadastre-se aqui!
+            </Link>
           </div>
         </Form>
       </div>
