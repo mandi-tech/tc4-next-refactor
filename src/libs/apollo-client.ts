@@ -44,7 +44,7 @@ const errorLink = new ErrorLink(({ error }) => {
         : message;
 
       antdStatic.notification?.error({
-        message: "Erro no GraphQL",
+        title: "Erro no GraphQL",
         description: sanitizedMessage,
         placement: "topRight",
       });
@@ -54,7 +54,7 @@ const errorLink = new ErrorLink(({ error }) => {
     });
   } else {
     antdStatic.notification?.error({
-      message: "Erro de Rede",
+      title: "Erro de Rede",
       description:
         "Não foi possível conectar ao servidor. Verifique sua conexão.",
       placement: "topRight",

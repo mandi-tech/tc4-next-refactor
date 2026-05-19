@@ -11,6 +11,7 @@ import {
     parseValorNumerico,
     getCurrentUser,
     formatarDataApi,
+    getBase64,
 } from "@/libs/utils/transacoes_helper";
 import ModalTransacao from "@/components/features/modals/modal_transacao";
 
@@ -53,6 +54,17 @@ export default function Topbar() {
                 return;
             }
 
+            let notaFiscalBase64 = undefined;
+            if (values.nota_fiscal && values.nota_fiscal.length > 0) {
+                const fileObj = values.nota_fiscal[0].originFileObj;
+
+                if (fileObj) {
+                    notaFiscalBase64 = await getBase64(fileObj);
+                } else {
+                    notaFiscalBase64 = values.nota_fiscal[0].name || values.nota_fiscal[0].url;
+                }
+            }
+
             await criarTransacao({
                 usuarioId: user.id,
                 tipo: tipoTransacao.toUpperCase(),
@@ -60,7 +72,7 @@ export default function Topbar() {
                 valor: valorNumerico,
                 categoria: values.categoria,
                 data_agendamento: formatarDataApi(values.agendamento),
-                nota_fiscal: values.nota_fiscal?.[0]?.name,
+                nota_fiscal: notaFiscalBase64,
             });
 
             message.success(
@@ -118,7 +130,7 @@ export default function Topbar() {
                     </Button>
                 </div>
 
-                {/* Perfil do Usuário (Ocultado em telas muito pequenas) */}
+                {/* Perfil do Usuário */}
                 <div className="hidden sm:flex items-center gap-sm border-l pl-md border-border">
                     <Avatar className="bg-primary-muted text-primary font-semibold shadow-inner">
                         {userInitial}

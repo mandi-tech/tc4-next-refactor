@@ -1,205 +1,102 @@
 "use client";
 
-import Filtros from "@/components/features/filtros/filtros";
-import { colunasTransacao } from "@/libs/utils/tabela_transacao";
-import {
-  ArrowRightOutlined,
-  BankOutlined,
-  FallOutlined,
-  RiseOutlined,
-} from "@ant-design/icons";
-import { Table } from "antd";
+import React from "react";
 import Link from "next/link";
-import { useQuery } from "@apollo/client/react";
-import {
-  GET_METRICAS,
-  GET_ANALISE_EXTRATO,
-  GET_SAIDAS_POR_CATEGORIA,
-  MetricasResponse,
-  AnaliseExtratoResponse,
-  SaidasPorCategoriaResponse,
-  DashboardVariables,
-} from "@/graphql/queries/dashboard";
-import {
-  GET_TRANSACOES,
-  TransacoesResponse,
-  TransacoesVariables,
-} from "@/graphql/queries/transacoes";
-import { useSearchParams } from "next/navigation";
+import { Table } from "antd";
+import { ArrowRightOutlined, BankOutlined, FallOutlined, RiseOutlined } from "@ant-design/icons";
+
+import Filtros from "@/components/features/filtros/filtros";
 import Card from "@/components/ui/Card/Card";
-import ComposedChart, { ChartConfig } from "@/components/ui/Charts/ComposedChart/ComposedChart";
+import { colunasTransacao } from "@/libs/utils/tabela_transacao";
+import { useDashboard } from "@/hooks/use-dashboard";
+import ComposedChart from "@/components/ui/Charts/ComposedChart/ComposedChart";
 import DonutChart from "@/components/ui/Charts/DonutChart/DonutChart";
 
 export default function Home() {
-  const searchParams = useSearchParams();
-
-  const userStr =
-    typeof window !== "undefined" ? localStorage.getItem("user") : null;
-  const user = userStr ? JSON.parse(userStr) : null;
-  const usuarioId = user?.id || "";
-
-  const dataInicial = searchParams.get("data_inicial") || undefined;
-  const dataFinal = searchParams.get("data_final") || undefined;
-
-  // Queries
-  const { data: metricasData, loading: loadingMetricas } = useQuery<
-    MetricasResponse,
-    DashboardVariables
-  >(GET_METRICAS, {
-    variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal },
-    skip: !usuarioId,
-  });
-
-  const { data: analiseData, loading: loadingAnalise } = useQuery<
-    AnaliseExtratoResponse,
-    DashboardVariables
-  >(GET_ANALISE_EXTRATO, {
-    variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal },
-    skip: !usuarioId,
-  });
-
-  const { data: categoriasData, loading: loadingCategorias } = useQuery<
-    SaidasPorCategoriaResponse,
-    DashboardVariables
-  >(GET_SAIDAS_POR_CATEGORIA, {
-    variables: { usuarioId, data_inicial: dataInicial, data_final: dataFinal },
-    skip: !usuarioId,
-  });
-
-  const { data: transacoesData, loading: loadingTransacoes } = useQuery<
-    TransacoesResponse,
-    TransacoesVariables
-  >(GET_TRANSACOES, {
-    variables: {
-      usuarioId,
-      tamanho_pagina: 5,
-      data_inicial: dataInicial,
-      data_final: dataFinal,
-    },
-    skip: !usuarioId,
-  });
-
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
-  };
-  const chartData =
-    analiseData?.analiseExtrato.map((item) => ({
-      mes: item.data,
-      renda: item.entrada,
-      gastos: item.saida,
-      saldo: item.saldo,
-    })) || [];
-
-  const donutData =
-    categoriasData?.saidasPorCategoria.map((item) => ({
-      name: item.categoria,
-      value: item.quantidade,
-      porcentagem: item.porcentagem,
-    })) || [];
-
-  const transacoesRecentes =
-    transacoesData?.transacoesPorUsuario.transacoes || [];
-  const chartConfigs: ChartConfig[] = [
-    {
-      key: "renda",
-      label: "Entradas",
-      color: "var(--verde)",
-      type: "bar",
-    },
-    {
-      key: "gastos",
-      label: "Saídas",
-      color: "var(--rosa)",
-      type: "bar",
-    },
-    {
-      key: "saldo",
-      label: "Saldo Acumulado",
-      color: "var(--lavanda)",
-      type: "line",
-    },
-  ];
+  const { metricas, chart, donut, transacoes, filtrosData } = useDashboard();
 
   return (
-    <>
-      <div className="flex flex-col gap-8">
-        <Filtros filtros={["periodo"]} />
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
-          <Card
-            icon={<BankOutlined />}
-            description="Saldo Total"
-            value={formatCurrency(metricasData?.metricas.saldo || 0)}
-            backgroundColor="azul"
-            color="cinza"
-            loading={loadingMetricas}
-          />
-          <Card
-            icon={<RiseOutlined />}
-            description="Receita Mensal"
-            value={formatCurrency(metricasData?.metricas.total_entrada || 0)}
-            backgroundColor="verde"
-            color="branco"
-            loading={loadingMetricas}
-          />
-          <Card
-            icon={<FallOutlined />}
-            description="Despesa Mensal"
-            value={formatCurrency(metricasData?.metricas.total_saida || 0)}
-            backgroundColor="rosa"
-            color="branco"
-            loading={loadingMetricas}
-          />
-        </section>
-        <section className="grid grid-cols-8 gap-6">
-          <ComposedChart
-            data={chartData}
-            configs={chartConfigs}
-            xAxisKey="mes"
-            title="Análise Financeira Diária"
-            className="col-span-8 xl:col-span-5"
-            loading={loadingAnalise}
-          />
-          <DonutChart
-            data={donutData}
-            className="col-span-8 xl:col-span-3"
-            title="Distribuição de Gastos por Categoria"
-            loading={loadingCategorias}
-          />
-        </section>
-        <div>
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-semibold text-secondaryForeground">
-              Transações Recentes
-            </h3>
-            <Link
-              href={{
-                pathname: "/extrato",
-                query: {
-                  ...(dataInicial && { data_inicial: dataInicial }),
-                  ...(dataFinal && { data_final: dataFinal }),
-                },
-              }}
-              className="text-lavanda text-md font-semibold flex gap-2 items-center"
-            >
-              <p className="hidden md:contents">Visualizar extrato</p>
-              <ArrowRightOutlined />
-            </Link>
-          </div>
+    <div className="flex flex-col gap-xl">
+      <Filtros filtros={["periodo"]} />
 
-          <div className="w-[100%] overflow-x-auto overflow-y-hidden">
-            <Table
-              columns={colunasTransacao}
-              dataSource={transacoesRecentes}
-              pagination={false}
-              rowKey="id"
-              loading={loadingTransacoes}
-            />
-          </div>
+      {/* Grid de Cards de Indicadores Financeiros */}
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-md w-full">
+        <Card
+          icon={<BankOutlined />}
+          description="Saldo Total"
+          value={metricas.saldo}
+          backgroundColor="var(--color-primary-muted)"
+          color="var(--color-primary)"
+          loading={metricas.loading}
+        />
+        <Card
+          icon={<RiseOutlined />}
+          description="Receita Mensal"
+          value={metricas.totalEntrada}
+          backgroundColor="var(--color-success-muted)"
+          color="var(--color-success)"
+          loading={metricas.loading}
+        />
+        <Card
+          icon={<FallOutlined />}
+          description="Despesa Mensal"
+          value={metricas.totalSaida}
+          backgroundColor="var(--color-danger-muted)"
+          color="var(--color-danger)"
+          loading={metricas.loading}
+        />
+      </section>
+
+      {/* Grid Central de Gráficos Analíticos */}
+      <section className="grid grid-cols-8 gap-md">
+        <ComposedChart
+          data={chart.data}
+          configs={chart.configs}
+          xAxisKey="mes"
+          title="Análise Financeira Diária"
+          className="col-span-8 xl:col-span-5"
+          loading={chart.loading}
+        />
+        <DonutChart
+          data={donut.data}
+          title="Distribuição de Gastos por Categoria"
+          className="col-span-8 xl:col-span-3"
+          loading={donut.loading}
+        />
+      </section>
+
+      {/* Seção de Resumo de Atividades Recentes */}
+      <div className="flex flex-col gap-sm">
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-semibold text-foreground tracking-tight">
+            Transações Recentes
+          </h3>
+          <Link
+            href={{
+              pathname: "/extrato",
+              query: {
+                ...(filtrosData.dataInicial && { data_inicial: filtrosData.dataInicial }),
+                ...(filtrosData.dataFinal && { data_final: filtrosData.dataFinal }),
+              },
+            }}
+            className="text-primary hover:text-primary-hover text-sm font-semibold flex gap-xs items-center transition-colors"
+          >
+            <span className="hidden md:inline">Visualizar extrato</span>
+            <ArrowRightOutlined className="text-xs" />
+          </Link>
+        </div>
+
+        <div className="w-full overflow-x-auto border border-border shadow-sm rounded-xl bg-background-secondary">
+          <Table
+            columns={colunasTransacao}
+            dataSource={transacoes.recentes}
+            pagination={false}
+            rowKey="id"
+            loading={transacoes.loading}
+            className="w-full"
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }

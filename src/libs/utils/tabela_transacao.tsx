@@ -1,6 +1,6 @@
 import { Transacao } from "@/graphql/queries/transacoes";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Popconfirm } from "antd";
+import { Button, Popconfirm, Image } from "antd";
 
 interface AcoesProps {
   onEdit: (record: Transacao) => void;
@@ -42,6 +42,25 @@ export const colunasTransacao = [
       const corTexto = dados.tipo === "SAIDA" ? "text-vermelho" : "text-verde";
 
       return <p className={`font-bold ${corTexto}`}>{valorFormatado}</p>;
+    },
+  },
+  {
+    title: "Nota Fiscal",
+    dataIndex: "nota_fiscal",
+    key: "nota_fiscal",
+    render: (nota_fiscal: string) => {
+      if (nota_fiscal && nota_fiscal.startsWith("data:image")) {
+        return (
+          <Image
+            src={nota_fiscal}
+            alt="Nota Fiscal"
+            width={40}
+            height={40}
+            className="object-cover rounded"
+          />
+        );
+      }
+      return <span className="text-gray-400 text-sm">Sem anexo</span>;
     },
   },
 ];

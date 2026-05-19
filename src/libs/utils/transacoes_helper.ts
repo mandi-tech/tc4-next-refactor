@@ -35,3 +35,14 @@ export const formatarDataApi = (date: any): string => {
   if (!date) return "";
   return dayjs(date).format("DD/MM/YYYY");
 };
+
+/**
+ * Converts a File object to a Base64 string.
+ */
+export const getBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
