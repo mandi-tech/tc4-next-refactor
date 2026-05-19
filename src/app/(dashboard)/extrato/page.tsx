@@ -29,6 +29,7 @@ import {
   parseValorNumerico,
   getCurrentUser,
   formatarDataApi,
+  getBase64,
 } from "@/libs/utils/transacoes_helper";
 
 interface FormValues {
@@ -99,7 +100,7 @@ export default function ExtratoPage() {
     CriarTransacaoVariables
   >(CRIAR_TRANSACAO, {
     onCompleted: async () => {
-      notification.success({ message: "Transação criada com sucesso!" });
+      notification.success({ title: "Transação criada com sucesso!" });
       await refetch();
     },
   });
@@ -109,7 +110,7 @@ export default function ExtratoPage() {
     EditarTransacaoVariables
   >(EDITAR_TRANSACAO, {
     onCompleted: () => {
-      notification.success({ message: "Transação atualizada com sucesso!" });
+      notification.success({ title: "Transação atualizada com sucesso!" });
       refetch();
     },
   });
@@ -119,12 +120,12 @@ export default function ExtratoPage() {
     DeletarTransacaoVariables
   >(DELETAR_TRANSACAO, {
     onCompleted: () => {
-      notification.success({ message: "Transação deletada com sucesso!" });
+      notification.success({ title: "Transação deletada com sucesso!" });
       refetch();
     },
     onError: (error) => {
       notification.error({
-        message: "Erro ao deletar transação",
+        title: "Erro ao deletar transação",
         description: error.message,
       });
     },
@@ -144,27 +145,37 @@ export default function ExtratoPage() {
     deletarTransacao({ variables: { id } });
   };
 
-  const handleSaveTransacao = (values: FormValues) => {
+  const handleSaveTransacao = async (values: FormValues) => {
     const valorNumerico = parseValorNumerico(values.valor);
 
     if (isNaN(valorNumerico)) {
       notification.error({
-        message: "Valor inválido",
+        title: "Valor inválido",
         description: "Por favor, insira um valor numérico válido.",
       });
       return;
     }
 
-    const commonVariables = {
-      tipo: transacaoSelecionada
-        ? transacaoSelecionada.tipo
-        : searchParams.get("tipo")?.toUpperCase() || "ENTRADA",
-      descricao: values.descricao,
-      valor: valorNumerico,
-      categoria: values.categoria,
-      data_agendamento: formatarDataApi(values.agendamento),
-      nota_fiscal: values.nota_fiscal?.[0]?.name,
-    };
+      let notaFiscalBase64 = undefined;
+      if (values.nota_fiscal && values.nota_fiscal.length > 0) {
+        const fileObj = (values.nota_fiscal[0] as any).originFileObj;
+        if (fileObj) {
+          notaFiscalBase64 = await getBase64(fileObj);
+        } else {
+          notaFiscalBase64 = values.nota_fiscal[0].name || (values.nota_fiscal[0] as any).url;
+        }
+      }
+
+      const commonVariables = {
+        tipo: transacaoSelecionada
+          ? transacaoSelecionada.tipo
+          : searchParams.get("tipo")?.toUpperCase() || "ENTRADA",
+        descricao: values.descricao,
+        valor: valorNumerico,
+        categoria: values.categoria,
+        data_agendamento: formatarDataApi(values.agendamento),
+        nota_fiscal: notaFiscalBase64,
+      };
 
     if (transacaoSelecionada) {
       editarTransacao({

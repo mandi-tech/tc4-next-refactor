@@ -7,22 +7,10 @@ import {
   Legend,
 } from "recharts";
 
-interface DonutData {
-  name: string;
-  value: number;
-}
 
-interface DonutChartProps {
-  data: DonutData[];
-  colors?: string[];
-  className?: string;
-  titulo?: string;
-  loading?: boolean;
-}
-
-const DEFAULT_COLORS = ["#2b2675", "#eb2f96", "#a99bf7", "#d1d84e", "#ff4d4f"];
 
 import { Skeleton } from "antd";
+import { DEFAULT_COLORS, DonutChartProps } from "@/libs/types/iGraficos";
 
 export default function GraficoDonuts({
   data,
