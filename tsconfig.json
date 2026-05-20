@@ -27,7 +27,11 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "src/styles/theme/colors/colors.js",
+    "src/styles/theme/shadows.js",
+    "src/styles/theme/borderRadius/borderRadius.js",
+    "src/styles/theme/spacing/spacing.js"
   ],
   "exclude": ["node_modules"]
 }

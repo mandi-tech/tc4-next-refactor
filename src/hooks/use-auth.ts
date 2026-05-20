@@ -1,11 +1,21 @@
 import { useMutation } from "@apollo/client/react";
-import { LOGIN_MUTATION, LoginResponse, LoginVariables, CRIAR_USUARIO_MUTATION, CriarUsuarioResponse, CriarUsuarioVariables } from "@/graphql/mutations/auth";
+import {
+  LOGIN_MUTATION,
+  LoginResponse,
+  LoginVariables,
+  CRIAR_USUARIO_MUTATION,
+  CriarUsuarioResponse,
+  CriarUsuarioVariables,
+} from "@/graphql/mutations/auth";
 import { useRouter } from "next/navigation";
 
 export const useAuth = () => {
   const router = useRouter();
 
-  const [loginMutation, { loading, error }] = useMutation<LoginResponse, LoginVariables>(LOGIN_MUTATION, {
+  const [loginMutation, { loading: loginLoading, error: loginError }] = useMutation<
+    LoginResponse,
+    LoginVariables
+  >(LOGIN_MUTATION, {
     onCompleted: (data) => {
       if (typeof window !== "undefined") {
         localStorage.setItem("token", data.login.token);
@@ -15,21 +25,24 @@ export const useAuth = () => {
     },
   });
 
-  const [registerMutation, { loading: registerLoading, error: registerError }] = useMutation<CriarUsuarioResponse, CriarUsuarioVariables>(CRIAR_USUARIO_MUTATION, {
+  const [registerMutation, { loading: registerLoading, error: registerError }] = useMutation<
+    CriarUsuarioResponse,
+    CriarUsuarioVariables
+  >(CRIAR_USUARIO_MUTATION, {
     onCompleted: () => {
       router.push("/login");
     },
   });
 
-  const login = async (email: string, senha: string) => {
+  const login = async (email: string, password: string) => {
     return await loginMutation({
-      variables: { email, senha },
+      variables: { email, senha: password },
     });
   };
 
-  const registrar = async (nome: string, email: string, senha: string) => {
+  const register = async (name: string, email: string, password: string) => {
     return await registerMutation({
-      variables: { nome, email, senha },
+      variables: { nome: name, email, senha: password },
     });
   };
 
@@ -43,10 +56,10 @@ export const useAuth = () => {
 
   return {
     login,
-    registrar,
+    register,
     logout,
-    loginLoading: loading,
-    loginError: error,
+    loginLoading,
+    loginError,
     registerLoading,
     registerError,
   };

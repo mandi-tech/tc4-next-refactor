@@ -1,118 +1,19 @@
 "use client";
 
-import {
-  validarEmail,
-  validarSenha,
-  validarNomeCompleto,
-} from "@/libs/utils/validadores";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { Button, Divider, Form, Input, Alert, App } from "antd";
-import { useAuth } from "@/hooks/use-auth";
+import RegisterForm from "@/components/features/auth/RegisterForm/RegisterForm";
+import React from "react";
 
-export default function NovoUsuarioPage() {
-  const {message} = App.useApp()
-  const { registrar, registerLoading } = useAuth();
-
-  const onFinish = async (values: any) => {
-    try {
-      await registrar(values.nome, values.email, values.senha);
-      message.success("Usuário criado com sucesso! Faça login para continuar.");
-    } catch (err: any) {
-      message.error(err.message || "Erro ao criar usuário.");
-    }
-  };
-
+export default function RegisterPage() {
   return (
-    <section className="w-full h-screen flex items-center justify-center">
-      <div className="w-[30%] flex flex-col items-center gap-6  px-10 py-15 rounded-lg shadow-lg">
-        <h1 className="font-bold text-3xl">Novo usuário</h1>
-        <Form
-          layout="vertical"
-          className="w-full gap-2 items-center justify-center"
-          onFinish={onFinish}
-        >
-          <Form.Item
-            label="Nome completo"
-            name="nome"
-            rules={[
-              { required: true, message: "Por favor, insira um nome válido." },
-              {
-                validator: (_, value) =>
-                  validarNomeCompleto(value)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Por favor, insira um nome válido."),
-                      ),
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Por favor, insira um email." },
-              {
-                validator: (_, value) =>
-                  validarEmail(value)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error("Por favor, insira um email válido."),
-                      ),
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Divider />
-          <Alert
-            title={
-              <h5 className="text-bold text-md">Regras para criar senha</h5>
-            }
-            description={
-              <ul className="text-xs">
-                <li>Deve ter pelo menos 6 dígitos</li>
-                <li>Deve conter números</li>
-                <li>Deve conter pelo menos uma letra maiúscula</li>
-                <li>Deve conter pelo menos um caractere especial</li>
-              </ul>
-            }
-            type="info"
-            showIcon
-            className="mb-2!"
-          />
-          <Form.Item
-            label="Senha"
-            name="senha"
-            rules={[
-              { required: true, message: "Por favor, insira a senha." },
-              {
-                validator: (_, value) =>
-                  validarSenha(value)
-                    ? Promise.resolve()
-                    : Promise.reject(
-                        new Error(
-                          "A senha deve ter 6 dígitos, maiúscula, minúscula, número e caractere especial.",
-                        ),
-                      ),
-              },
-            ]}
-          >
-            <Input.Password
-              type="password"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full" loading={registerLoading}>
-              Cadastrar
-            </Button>
-          </Form.Item>
-        </Form>
+    <section className="bg-background text-foreground px-md flex h-screen w-full items-center justify-center">
+      <div className="gap-lg p-xl bg-background-secondary border-border flex w-full flex-col items-stretch rounded-xl border shadow-md sm:w-[480px]">
+        <header className="gap-xxs flex flex-col text-center">
+          <h1 className="text-foreground text-3xl font-bold tracking-tight">Crie uma conta</h1>
+          <p className="text-foreground-secondary text-sm">
+            Comece a gerenciar suas finanças de forma inteligente
+          </p>
+        </header>
+        <RegisterForm />
       </div>
     </section>
   );
