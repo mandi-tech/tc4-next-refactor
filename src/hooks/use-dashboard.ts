@@ -16,7 +16,7 @@ import {
 } from "@/graphql/queries/transacoes";
 import { getCurrentUser } from "@/libs/utils/transacoes_helper";
 import { useQuery } from "@apollo/client/react";
-import { ChartConfig } from "@/components/ui/Charts/ComposedChart/ComposedChart";
+import { ChartConfig } from "@/components/ui/Charts/types";
 
 export function useDashboard() {
   const searchParams = useSearchParams();

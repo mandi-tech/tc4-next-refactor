@@ -1,4 +1,3 @@
-// app/layout.tsx
 import React from "react";
 import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";

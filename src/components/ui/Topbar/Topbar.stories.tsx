@@ -1,4 +1,3 @@
-// src/components/ui/Topbar/Topbar.stories.tsx
 import React, { useEffect } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import Topbar from "./Topbar";

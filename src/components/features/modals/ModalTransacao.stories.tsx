@@ -1,10 +1,8 @@
-// src/components/features/modals/ModalTransacao.stories.tsx
 import type { Meta, StoryObj } from "@storybook/react";
 import { GET_CATEGORIAS } from "@/graphql/queries/categorias";
 import ModalTransacao from "./modal_transacao";
 import { MockedProvider } from "@apollo/client/testing/react";
 
-// Mock contendo categorias mistas de ENTRADA e SAÍDA
 const mockCategoriasCompleto = [
     {
         request: {
@@ -29,13 +27,11 @@ const meta: Meta<typeof ModalTransacao> = {
     title: "Components/Features/ModalTransacao",
     component: ModalTransacao,
     parameters: {
-        // Como modais renderizam em overlays (portals), o layout fullscreen evita duplicidade de scrollbars na janela de preview
         layout: "fullscreen",
     },
     decorators: [
         (Story) => (
             <MockedProvider mocks={mockCategoriasCompleto}>
-                {/* Adicionar uma div de fundo ajuda a dar contraste para ver o overlay do Modal */}
                 <div style={{ padding: "2rem", background: "#f0f2f5", minHeight: "100vh" }}>
                     <p style={{ textAlign: "center", color: "#8c8c8c" }}>O modal está renderizado abaixo</p>
                     <Story />

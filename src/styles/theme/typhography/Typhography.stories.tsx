@@ -1,4 +1,3 @@
-// src/styles/theme/typography/Typography.stories.tsx
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { manrope } from "./typhography";
@@ -25,7 +24,6 @@ const TypographyDashboard = () => {
     ];
 
     return (
-        // Injetamos a variável da fonte na classe pai para o Tailwind/CSS conseguir ler
         <div className={`${manrope.variable} font-sans p-xl bg-[#f6f7f9] text-[#151720] min-h-screen w-full`}>
 
             {/* Cabeçalho */}

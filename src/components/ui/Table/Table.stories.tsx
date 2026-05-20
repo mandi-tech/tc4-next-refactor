@@ -52,7 +52,6 @@ const columnsMock: ColumnsType<TransactionData> = [
     dataIndex: "amount",
     key: "amount",
     align: "right",
-    // Agora o TypeScript sabe perfeitamente que 'record' é um 'TransactionData'
     render: (amount: string, record) => (
       <span
         className={

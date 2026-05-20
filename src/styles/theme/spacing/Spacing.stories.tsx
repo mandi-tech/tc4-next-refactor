@@ -1,7 +1,6 @@
-// src/styles/theme/spacing/Spacing.stories.tsx
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { spacing } from "./spacing"; // Ajuste o caminho conforme sua nova estrutura de pastas
+import { spacing } from "./spacing";
 
 const SpacingDashboard = () => {
     return (
@@ -36,7 +35,6 @@ const SpacingDashboard = () => {
                                         {name}
                                     </td>
 
-                                    {/* Atalho de Classes utilitárias do Tailwind */}
                                     <td className="p-md">
                                         <span className="bg-[#4d33cc]/5 text-[#4d33cc] font-mono text-xs px-sm py-xs rounded-md border border-[#4d33cc]/10 block w-fit">
                                             p-{name} / m-{name} / gap-{name}
@@ -56,7 +54,6 @@ const SpacingDashboard = () => {
                                                 style={{ width: value }}
                                                 title={`Tamanho: ${value}`}
                                             />
-                                            {/* Linha guia para os tamanhos menores ficarem visíveis */}
                                             <span className="text-xxs text-[#151720]/30 font-mono">
                                                 |
                                             </span>

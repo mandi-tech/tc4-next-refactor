@@ -24,7 +24,6 @@ const authLink = new SetContextLink((prevContext) => {
 const errorLink = new ErrorLink(({ error }) => {
   if (CombinedGraphQLErrors.is(error)) {
     error.errors.forEach(({ message, locations, path }) => {
-      // Check for expiration or unauthorized errors
       if (message.includes("Sessão expirada") || message.includes("Não autorizado")) {
         if (typeof window !== "undefined") {
           localStorage.removeItem("token");
