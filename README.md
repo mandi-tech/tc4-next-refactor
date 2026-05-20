@@ -1,5 +1,5 @@
 <h1 align="center">
-  Tech Challenge - Fase 03: Gerenciador Financeiro
+  Tech Challenge - Fase 04: Gerenciador Financeiro
 </h1>
 
 <p align="center">
@@ -34,7 +34,7 @@
 
 ## 📱 Sobre o projeto
 
-Este projeto foi desenvolvido como parte do **Tech Challenge - Fase 03** da Pós Tech.
+Este projeto foi desenvolvido como parte do **Tech Challenge - Fase 04** da Pós Tech.
 
 A aplicação foi planejada sob a ótica de engenharia de software modular, unindo o ecossistema reativo do **React** e do **Next.js** à segurança de tipos do **TypeScript**. Além de entregar regras de negócio financeiras, o projeto destaca-se por possuir um catálogo visual estrito que documenta desde os átomos fundamentais de design (tokens de cor, espaçamento, sombras) até os organismos de dados complexos (gráficos e modais integrados com GraphQL).
 
@@ -232,11 +232,6 @@ npm run storybook
 # ou caso use yarn
 yarn storybook
 ```
-
-### O que mudou e por que ficou melhor?
-1. **Consistência Técnica:** Substituímos as referências a `Dart/Flutter` por estruturas reais do ecossistema **Next.js / React / TypeScript**.
-2. **Caminhos de Pastas Reais:** O caminho apontado agora reflete exatamente a estrutura de diretórios (`src/styles/theme/` e `src/components/ui/`) que você mapeou na sua árvore real.
-3. **Didática Clara:** O bloco de código de exemplo mostra o padrão clássico de importação com o alias (`@/`) usado no Next.js.
 
 ---
 
