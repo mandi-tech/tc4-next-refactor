@@ -30,6 +30,11 @@
 
 ---
 
+> [!TIP]
+> É possível navegar pelos tópicos da nossa documentação de forma mais facilitada! [Basta acessar a nossa wiki.](https://github.com/mandi-tech/tc4-next-refactor/wiki)
+
+---
+
 <span id="sobre">
 
 ## 📱 Sobre o projeto
