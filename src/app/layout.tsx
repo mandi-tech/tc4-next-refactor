@@ -1,24 +1,35 @@
-"use client";
-
+// app/layout.tsx
 import React from "react";
-import { ConfigProvider, App as AntdApp } from "antd";
+import type { Metadata } from "next";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { getDynamicThemeStyles } from "@/styles/theme/colors/colors";
-import theme from "@/styles/theme/theme";
+import Providers from "@/components/ui/provider"
 
-interface ProvidersProps {
+import "@/styles/globals.css";
+
+export const metadata: Metadata = {
+  title: "Bytebank",
+  description: "Secure internet banking applications",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}
-
-export default function Providers({ children }: ProvidersProps) {
+}>) {
   return (
-    <AntdRegistry>
-      <ConfigProvider theme={theme}>
-        <AntdApp className="h-full">
-          <style dangerouslySetInnerHTML={{ __html: getDynamicThemeStyles() }} />
-          {children}
-        </AntdApp>
-      </ConfigProvider>
-    </AntdRegistry>
+    <html lang="pt-BR" className="h-full">
+      <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <style dangerouslySetInnerHTML={{ __html: getDynamicThemeStyles() }} />
+      </head>
+      <body className="h-full antialiased">
+        <AntdRegistry>
+          <Providers>
+            {children}
+          </Providers>
+        </AntdRegistry>
+      </body>
+    </html>
   );
 }

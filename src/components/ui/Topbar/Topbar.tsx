@@ -95,7 +95,7 @@ export default function Topbar() {
   const userInitial = nomeUsuario.charAt(0).toUpperCase();
 
   return (
-    <div className="py-md gap-md border-border/40 bg-background/90 sticky top-0 z-40 flex flex-col items-stretch justify-between border-b backdrop-blur-md md:flex-row md:items-center">
+    <div className="py-md px-md gap-md border-border/40 bg-background/90 sticky top-0 z-40 flex flex-col items-stretch justify-between border-b backdrop-blur-md md:flex-row md:items-center">
       {/* Lado Esquerdo: Gatilho Mobile + Título Dinâmico */}
       <div className="gap-sm flex items-center">
         {isMobile && (

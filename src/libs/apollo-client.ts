@@ -3,9 +3,12 @@ import { SetContextLink } from "@apollo/client/link/context";
 import { ErrorLink } from "@apollo/client/link/error";
 import { HttpLink } from "@apollo/client/link/http";
 import antdStatic from "./utils/antd-static";
+import { createHttpLink } from "@apollo/client";
 
-const httpLink = new HttpLink({
-  uri: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/graphql",
+const apiUri = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/graphql";
+
+const httpLink = createHttpLink({
+  uri: apiUri,
 });
 
 const authLink = new SetContextLink((prevContext) => {

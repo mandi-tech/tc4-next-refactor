@@ -1,4 +1,3 @@
-// src/components/features/auth/LoginForm.tsx
 "use client";
 
 import React from "react";
@@ -66,7 +65,7 @@ export default function LoginForm({ onSubmitOverride, isLoadingOverride }: Login
       <div className="text-foreground-secondary mt-sm text-center text-sm">
         <span>Não tem uma conta? </span>
         <Link
-          href="/register"
+          href="/novo_usuario"
           className="text-primary hover:text-primary-hover font-medium whitespace-nowrap transition-colors hover:underline"
         >
           Cadastre-se aqui!
