@@ -250,8 +250,10 @@ yarn install
 Crie um arquivo .env na raiz do projeto e configure a URL de conexão para o seu endpoint GraphQL ativo:
 
 ```
-NEXT_PUBLIC_API_URL= 
+NEXT_PUBLIC_API_URL=https://tc4-backend-graphql-production.up.railway.app/graphql/
 ```
+> [!TIP]
+> Se preferir, é possível rodar o projeto [tc4-backend-graphql](https://github.com/mandi-tech/tc4-backend-graphql) e utiliza-lo localmente substituindo o NEXT_PUBLIC_API_URL pela do servidor local. Por padrão, será http://localhost:8080/
 
 ### 3. Executar o servidor de desenvolvimento
 ```Bash
