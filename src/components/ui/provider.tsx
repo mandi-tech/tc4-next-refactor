@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useLayoutEffect, useCallback } from "react";
-import { ConfigProvider, theme as antdTheme } from "antd";
+import React, { useState, useLayoutEffect, useCallback } from "react";
+import { ConfigProvider, theme as antdTheme, App } from "antd";
 import themeConfig from "@/styles/theme/theme";
-import { darkPalette, lightPalette } from "@/styles/theme/cores";
-import { App } from "antd";
+import { darkPalette, lightPalette } from "@/styles/theme/colors/colors";
 import { setStatic } from "@/libs/utils/antd-static";
-
 import { ApolloProvider } from "@apollo/client/react";
 import { client } from "@/libs/apollo-client";
 
@@ -23,23 +21,20 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
   const applyTheme = useCallback(() => {
     const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)",
-    ).matches;
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const shouldBeDark = savedTheme === "dark" || (!savedTheme && prefersDark);
 
     setIsDark(shouldBeDark);
 
-    const palette = shouldBeDark ? darkPalette : lightPalette;
     const root = document.documentElement;
 
-    Object.entries(palette).forEach(([key, value]) => {
-      const cssVarName = `--${key.replace(/([A-Z])/g, "-$1").toLowerCase()}`;
-      root.style.setProperty(cssVarName, value as string);
-    });
-
-    if (shouldBeDark) root.classList.add("dark");
-    else root.classList.remove("dark");
+    if (shouldBeDark) {
+      root.classList.add("dark");
+      root.setAttribute("data-theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      root.setAttribute("data-theme", "light");
+    }
   }, []);
 
   useLayoutEffect(() => {
@@ -53,16 +48,15 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <ConfigProvider
         theme={{
           ...themeConfig,
-          algorithm: isDark
-            ? antdTheme.darkAlgorithm
-            : antdTheme.defaultAlgorithm,
+          algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
           token: {
             ...themeConfig.token,
-            colorPrimary: currentPalette.azul,
-            colorSuccess: currentPalette.verde,
-            colorError: currentPalette.vermelho,
+            colorPrimary: currentPalette.primary,
+            colorSuccess: currentPalette.success,
+            colorError: currentPalette.danger,
+            colorWarning: currentPalette.warning,
             colorBgLayout: currentPalette.background,
-            colorBgContainer: currentPalette.secondaryBackground,
+            colorBgContainer: currentPalette["background-secondary"],
             colorText: currentPalette.foreground,
           },
         }}
