@@ -212,7 +212,7 @@ export default function Example() {
 <span id="storybook">
 
 ## 📚 Storybook
-O projeto utiliza o Storybook 8.x para isolar, testar e documentar o comportamento de cada componente e token visual da interface de forma independente do backend.
+O projeto utiliza o Storybook 10.4 para isolar, testar e documentar o comportamento de cada componente e token visual da interface de forma independente do backend.
 
 Essa abordagem permite à equipe:
 
