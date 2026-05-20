@@ -25,24 +25,24 @@ export default function Home() {
           icon={<BankOutlined />}
           description="Saldo Total"
           value={metricas.saldo}
-          backgroundColor="var(--color-primary-muted)"
-          color="var(--color-primary)"
+          backgroundColor="primary-muted"
+          color="primary"
           loading={metricas.loading}
         />
         <Card
           icon={<RiseOutlined />}
           description="Receita Mensal"
           value={metricas.totalEntrada}
-          backgroundColor="var(--color-success-muted)"
-          color="var(--color-success)"
+          backgroundColor="success-muted"
+          color="success"
           loading={metricas.loading}
         />
         <Card
           icon={<FallOutlined />}
           description="Despesa Mensal"
           value={metricas.totalSaida}
-          backgroundColor="var(--color-danger-muted)"
-          color="var(--color-danger)"
+          backgroundColor="danger-muted"
+          color="danger"
           loading={metricas.loading}
         />
       </section>

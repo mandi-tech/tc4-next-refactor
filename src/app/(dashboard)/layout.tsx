@@ -30,7 +30,7 @@ export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
                 {/* Área de Conteúdo Principal */}
                 <main className="px-md md:px-xl py-md content-stable flex h-screen flex-1 flex-col overflow-y-auto">
                   <Topbar />
-                  <div className="mx-auto w-full max-w-7xl flex-1">{children}</div>
+                  <div className="mx-auto w-full max-w-7xl flex-1 mt-lg">{children}</div>
                 </main>
               </div>
             </SidebarProvider>
