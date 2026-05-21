@@ -276,7 +276,7 @@ Acesse http://localhost:3000 no seu navegador para ver a aplicação rodando.
 ## 🎥 Demonstração
 O vídeo abaixo apresenta o fluxo completo da aplicação web: telas de autenticação e proteção de rotas, navegação responsiva, filtragem via parâmetros na URL, abertura e validação do formulário no modal, além de um tour completo pelo ecossistema de componentes e tokens documentados dentro do Storybook:
 
-[Assista ao Vídeo de Demonstração no YouTube]()
+[Assista ao Vídeo de Demonstração no YouTube](https://www.youtube.com/watch?v=THis5gU93Ck)
 
 ---
 
