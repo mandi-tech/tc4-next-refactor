@@ -24,9 +24,7 @@ export const colunasTransacao = [
     key: "categoria",
     render: (categoria: string) => {
       if (!categoria) return "";
-      return (
-        categoria.charAt(0).toUpperCase() + categoria.slice(1).toLowerCase()
-      );
+      return categoria.charAt(0).toUpperCase() + categoria.slice(1).toLowerCase();
     },
   },
   {
@@ -39,7 +37,7 @@ export const colunasTransacao = [
         currency: "BRL",
       }).format(item);
 
-      const corTexto = dados.tipo === "SAIDA" ? "text-vermelho" : "text-verde";
+      const corTexto = dados.tipo === "SAIDA" ? "text-red-500" : "text-green-500";
 
       return <p className={`font-bold ${corTexto}`}>{valorFormatado}</p>;
     },
@@ -56,11 +54,11 @@ export const colunasTransacao = [
             alt="Nota Fiscal"
             width={40}
             height={40}
-            className="object-cover rounded"
+            className="rounded object-cover"
           />
         );
       }
-      return <span className="text-gray-400 text-sm">Sem anexo</span>;
+      return <span className="text-sm text-gray-400">Sem anexo</span>;
     },
   },
 ];
@@ -85,7 +83,7 @@ export const getColunasExtrato = ({ onEdit, onDelete }: AcoesProps) => [
             cancelText="Não"
           >
             <Button
-              className="!bg-vermelho !text-branco border !border-vermelho"
+              className="!bg-vermelho !text-branco !border-vermelho border"
               icon={<DeleteOutlined />}
             />
           </Popconfirm>

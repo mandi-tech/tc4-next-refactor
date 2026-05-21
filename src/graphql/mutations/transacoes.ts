@@ -92,7 +92,7 @@ export interface EditarTransacaoVariables {
   valor?: number;
   categoria?: string;
   data_agendamento?: string;
-  nota_fiscal?: string;
+  nota_fiscal?: string | null;
 }
 
 export interface DeletarTransacaoResponse {

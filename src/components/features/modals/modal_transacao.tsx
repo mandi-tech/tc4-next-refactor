@@ -1,13 +1,4 @@
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Modal,
-  Radio,
-  InputNumber,
-  Upload,
-} from "antd";
+import { Button, DatePicker, Form, Input, Modal, Radio, InputNumber, Upload } from "antd";
 import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
 import antdStatic from "@/libs/utils/antd-static";
@@ -15,10 +6,7 @@ import { tipoEntrada, tipoSaida } from "@/libs/types/iTransacoes";
 import { iModalTransacao } from "@/libs/types/iModal";
 import { useEffect, useMemo } from "react";
 import dayjs from "dayjs";
-import {
-  GET_CATEGORIAS,
-  CategoriasResponse,
-} from "@/graphql/queries/categorias";
+import { GET_CATEGORIAS, CategoriasResponse } from "@/graphql/queries/categorias";
 import { useQuery } from "@apollo/client/react";
 
 export default function ModalTransacao(props: iModalTransacao) {
@@ -28,9 +16,7 @@ export default function ModalTransacao(props: iModalTransacao) {
 
   const iconMapping = useMemo(() => {
     const allHardcoded = [...tipoEntrada, ...tipoSaida];
-    return Object.fromEntries(
-      allHardcoded.map((item) => [item.tipo, item.icone]),
-    );
+    return Object.fromEntries(allHardcoded.map((item) => [item.tipo, item.icone]));
   }, []);
 
   const categoriasFiltradas = useMemo(() => {
@@ -49,17 +35,20 @@ export default function ModalTransacao(props: iModalTransacao) {
         agendamento: props.initialData.data_agendamento
           ? dayjs(props.initialData.data_agendamento, "DD/MM/YYYY")
           : null,
-        nota_fiscal: props.initialData.nota_fiscal && props.initialData.nota_fiscal.startsWith("data:image")
-          ? [
-              {
-                uid: "-1",
-                name: "nota_fiscal_atual",
-                status: "done",
-                url: props.initialData.nota_fiscal,
-                thumbUrl: props.initialData.nota_fiscal,
-              },
-            ]
-          : props.initialData.nota_fiscal ? [{ uid: "-1", name: props.initialData.nota_fiscal, status: "done" }] : undefined,
+        nota_fiscal:
+          props.initialData.nota_fiscal && props.initialData.nota_fiscal.startsWith("data:image")
+            ? [
+                {
+                  uid: "-1",
+                  name: "nota_fiscal_atual",
+                  status: "done",
+                  url: props.initialData.nota_fiscal,
+                  thumbUrl: props.initialData.nota_fiscal,
+                },
+              ]
+            : props.initialData.nota_fiscal
+              ? [{ uid: "-1", name: props.initialData.nota_fiscal, status: "done" }]
+              : undefined,
       });
     } else {
       form.resetFields();
@@ -85,18 +74,14 @@ export default function ModalTransacao(props: iModalTransacao) {
         <Form.Item
           name="descricao"
           label="Descrição"
-          rules={[
-            { required: true, message: "Por favor, insira uma descrição." },
-          ]}
+          rules={[{ required: true, message: "Por favor, insira uma descrição." }]}
         >
           <Input maxLength={200} />
         </Form.Item>
         <Form.Item
           name="valor"
           label="Valor"
-          rules={[
-            { required: true, message: "Por favor, insira um valor válido." },
-          ]}
+          rules={[{ required: true, message: "Por favor, insira um valor válido." }]}
         >
           <InputNumber<number>
             controls={false}
@@ -127,21 +112,15 @@ export default function ModalTransacao(props: iModalTransacao) {
           label="Agendamento"
           rules={[{ required: true, message: "Por favor, insira uma data." }]}
         >
-          <DatePicker
-            placeholder="Selecione uma data"
-            className="w-full!"
-            format={"DD/MM/YYYY"}
-          />
+          <DatePicker placeholder="Selecione uma data" className="w-full!" format={"DD/MM/YYYY"} />
         </Form.Item>
         <Form.Item
           name="categoria"
           label="Categoria"
-          rules={[
-            { required: true, message: "Por favor, insira uma categoria." },
-          ]}
+          rules={[{ required: true, message: "Por favor, insira uma categoria." }]}
         >
           <Radio.Group className="w-full">
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {categoriasFiltradas.map((item) => (
                 <Radio.Button
                   key={item.id}
@@ -149,7 +128,7 @@ export default function ModalTransacao(props: iModalTransacao) {
                   className="flex flex-col items-center justify-center rounded-lg border-2 text-center transition-all"
                   style={{ height: "100%" }}
                 >
-                  <div className="text-2xl pt-2">
+                  <div className="pt-2 text-2xl">
                     {iconMapping[item.categoria] || <InboxOutlined />}
                   </div>
                   <div className="text-md font-semibold">{item.categoria}</div>
@@ -179,9 +158,7 @@ export default function ModalTransacao(props: iModalTransacao) {
                 file.type === "image/png" ||
                 file.type === "image/svg+xml";
               if (!isAllowedFormat) {
-                antdStatic.message.error(
-                  "Você só pode fazer upload de arquivos JPG/PNG/SVG!"
-                );
+                antdStatic.message.error("Você só pode fazer upload de arquivos JPG/PNG/SVG!");
                 return Upload.LIST_IGNORE;
               }
               const isLt2M = file.size / 1024 / 1024 < 2;
@@ -201,7 +178,7 @@ export default function ModalTransacao(props: iModalTransacao) {
           </Dragger>
         </Form.Item>
 
-        <div className="!w-full flex justify-between items-center gap-4">
+        <div className="flex !w-full items-center justify-between gap-4">
           <Button variant="outlined" onClick={props.handleCancel}>
             Cancelar
           </Button>

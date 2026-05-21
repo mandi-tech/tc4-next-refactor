@@ -4,10 +4,7 @@ import { DatePicker, Radio, Select, Spin } from "antd";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import {
-  GET_CATEGORIAS,
-  CategoriasResponse,
-} from "@/graphql/queries/categorias";
+import { GET_CATEGORIAS, CategoriasResponse } from "@/graphql/queries/categorias";
 import { useQuery } from "@apollo/client/react";
 
 dayjs.extend(customParseFormat);
@@ -18,9 +15,7 @@ export interface iFiltros {
   filtros?: string[];
 }
 
-export default function Filtros({
-  filtros = ["tipo", "categoria", "periodo"],
-}: iFiltros) {
+export default function Filtros({ filtros = ["tipo", "categoria", "periodo"] }: iFiltros) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -66,14 +61,22 @@ export default function Filtros({
     })) || [];
 
   return (
-    <div className="flex flex-wrap justify-end gap-3 w-full items-center">
+    <div className="flex w-full flex-wrap items-center justify-end gap-3">
       {filtros.includes("tipo") && (
         <Radio.Group buttonStyle="solid" value={tipo} className="w-full md:w-[fit-content]">
-          <Radio.Button value="entrada" onClick={onRadioChange} className="w-[50%] md:w-[fit-content]">
-            Entrada
+          <Radio.Button
+            value="entrada"
+            onClick={onRadioChange}
+            className="w-[50%] md:w-[fit-content]"
+          >
+            Receitas
           </Radio.Button>
-          <Radio.Button value="saida" onClick={onRadioChange} className="w-[50%] md:w-[fit-content]">
-            Saída
+          <Radio.Button
+            value="saida"
+            onClick={onRadioChange}
+            className="w-[50%] md:w-[fit-content]"
+          >
+            Despesas
           </Radio.Button>
         </Radio.Group>
       )}
@@ -98,10 +101,7 @@ export default function Filtros({
           onChange={onDateChange}
           value={
             dataInicial && dataFinal
-              ? [
-                dayjs(dataInicial, "DD/MM/YYYY"),
-                dayjs(dataFinal, "DD/MM/YYYY"),
-              ]
+              ? [dayjs(dataInicial, "DD/MM/YYYY"), dayjs(dataFinal, "DD/MM/YYYY")]
               : null
           }
           className="w-full md:w-[18vw]"

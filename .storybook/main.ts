@@ -1,0 +1,28 @@
+import type { StorybookConfig } from "@storybook/nextjs";
+
+const config: StorybookConfig = {
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  addons: [
+    "@storybook/addon-links",
+    "@storybook/addon-essentials",
+    "@storybook/addon-interactions",
+    "@storybook/addon-styling-webpack",
+  ],
+  framework: {
+    name: "@storybook/nextjs",
+    options: {},
+  },
+  typescript: {
+    reactDocgen: "react-docgen-typescript",
+    reactDocgenTypescriptOptions: {
+      propFilter: (prop) => {
+        if (prop.parent) {
+          return !prop.parent.fileName.includes("@types/react");
+        }
+        return true;
+      },
+    },
+  },
+};
+
+export default config;

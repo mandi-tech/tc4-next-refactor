@@ -1,27 +1,26 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { App, Avatar, Button } from "antd";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import ModalTransacao from "../features/modals/modal_transacao";
-import { useTransacoes } from "@/hooks/use-transacoes";
 import { MenuOutlined } from "@ant-design/icons";
 import { useSidebar } from "@/context/sidebar-context";
+import { useTransacoes } from "@/hooks/use-transacoes";
 import {
   parseValorNumerico,
   getCurrentUser,
   formatarDataApi,
   getBase64,
 } from "@/libs/utils/transacoes_helper";
+import ModalTransacao from "@/components/features/modals/modal_transacao";
 
 export default function Topbar() {
-  const {message} = App.useApp()
+  const { message } = App.useApp();
   const { criarTransacao, creating } = useTransacoes();
   const { isMobile, setIsOpen } = useSidebar();
+
   const [modalOpen, setModalOpen] = useState(false);
-  const [tipoTransacao, setTipoTransacao] = useState<"entrada" | "saida">(
-    "entrada",
-  );
+  const [tipoTransacao, setTipoTransacao] = useState<"entrada" | "saida">("entrada");
   const [nomeUsuario, setNomeUsuario] = useState<string>("Usuário");
 
   const pathname = usePathname();
@@ -33,17 +32,10 @@ export default function Topbar() {
     }
   }, []);
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
+  const handleCloseModal = () => setModalOpen(false);
 
-  const handleReceitaOpen = () => {
-    setTipoTransacao("entrada");
-    setModalOpen(true);
-  };
-
-  const handleSaidaOpen = () => {
-    setTipoTransacao("saida");
+  const handleActionOpen = (type: "entrada" | "saida") => {
+    setTipoTransacao(type);
     setModalOpen(true);
   };
 
@@ -51,14 +43,11 @@ export default function Topbar() {
     try {
       const user = getCurrentUser();
       if (!user) {
-        message.error(
-          "Usuário não encontrado. Por favor, faça login novamente.",
-        );
+        message.error("Usuário não encontrado. Por favor, faça login novamente.");
         return;
       }
 
       const valorNumerico = parseValorNumerico(values.valor);
-
       if (isNaN(valorNumerico)) {
         message.error("Por favor, insira um valor numérico válido.");
         return;
@@ -67,6 +56,7 @@ export default function Topbar() {
       let notaFiscalBase64 = undefined;
       if (values.nota_fiscal && values.nota_fiscal.length > 0) {
         const fileObj = values.nota_fiscal[0].originFileObj;
+
         if (fileObj) {
           notaFiscalBase64 = await getBase64(fileObj);
         } else {
@@ -84,9 +74,8 @@ export default function Topbar() {
         nota_fiscal: notaFiscalBase64,
       });
 
-      message.success(
-        `${tipoTransacao === "entrada" ? "Receita" : "Despesa"} criada com sucesso!`,
-      );
+      message.success(`${tipoTransacao === "entrada" ? "Receita" : "Despesa"} criada com sucesso!`);
+
       handleCloseModal();
     } catch (err: any) {
       message.error(err.message || "Erro ao criar transação.");
@@ -95,61 +84,63 @@ export default function Topbar() {
 
   const getTitle = () => {
     if (pathname === "/") return "Dashboard";
-    const routeName = pathname.split("/")[1];
-    return routeName.charAt(0).toUpperCase() + routeName.slice(1);
+    const routeSegment = pathname.split("/")[1] || "";
+    return routeSegment
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
-  const inicial = nomeUsuario.charAt(0).toUpperCase();
+  const userInitial = nomeUsuario.charAt(0).toUpperCase();
 
   return (
-    <div className="flex flex-col md:flex-row justify-between items-end lg:items-center py-5 gap-4">
-      <div className="flex items-center gap-3 w-full md:w-auto">
+    <div className="py-md px-md gap-md border-border/40 bg-background/90 sticky top-0 z-40 flex flex-col items-stretch justify-between border-b backdrop-blur-md md:flex-row md:items-center">
+      {/* Lado Esquerdo: Gatilho Mobile + Título Dinâmico */}
+      <div className="gap-sm flex items-center">
         {isMobile && (
           <Button
             icon={<MenuOutlined />}
             onClick={() => setIsOpen(true)}
-            className="!bg-azul !text-branco border-none shadow-sm"
+            className="bg-primary text-primary-foreground border-none shadow-sm hover:opacity-90"
           />
         )}
-        <h1 className="text-3xl font-semibold text-foreground">{getTitle()}</h1>
+        <h1 className="text-foreground text-2xl font-bold tracking-tight">{getTitle()}</h1>
       </div>
 
-      <div className="flex items-center gap-4 w-full md:w-auto">
-        <div className="grid grid-cols-2 gap-2 md:w-[fit-content] w-full">
+      {/* Lado Direito: Ações Rápidas + Avatar */}
+      <div className="gap-md flex w-full items-center self-end md:w-auto md:self-auto">
+        <div className="gap-sm grid w-full grid-cols-2 md:w-auto">
           <Button
-            className="!col-span-1 md:!w-[fit-content] !bg-branco !text-azul "
-            onClick={handleReceitaOpen}
+            className="border-border text-foreground bg-background-secondary hover:bg-border/20 w-full md:w-auto"
+            onClick={() => handleActionOpen("entrada")}
             size="large"
           >
             Nova Receita
           </Button>
           <Button
-            variant="outlined"
-            className="!col-span-1 w-full !bg-azul !text-branco"
-            onClick={handleSaidaOpen}
+            type="primary"
+            className="bg-primary text-primary-foreground w-full md:w-auto"
+            onClick={() => handleActionOpen("saida")}
             size="large"
           >
-            Nova Saída
+            Nova Despesa
           </Button>
         </div>
 
-        <div className="flex items-center gap-2 border-l pl-4 border-border hidden lg:flex">
-          <Avatar
-            style={{
-              backgroundColor: "var(--lavanda)",
-              color: "var(--branco)",
-            }}
-          >
-            {inicial}
+        {/* Perfil do Usuário */}
+        <div className="gap-sm pl-md border-border hidden items-center border-l sm:flex">
+          <Avatar className="bg-primary-muted text-primary font-semibold shadow-inner">
+            {userInitial}
           </Avatar>
-          <h5 className="text-md text-foreground ">{nomeUsuario}</h5>
+          <span className="text-foreground-secondary text-sm font-medium">{nomeUsuario}</span>
         </div>
       </div>
+
       <ModalTransacao
         isModalOpen={modalOpen}
         handleOk={handleSaveNewTransacao}
         handleCancel={handleCloseModal}
-        tipo={"novo"}
+        tipo="novo"
         tipoTransacao={tipoTransacao}
         loading={creating}
       />

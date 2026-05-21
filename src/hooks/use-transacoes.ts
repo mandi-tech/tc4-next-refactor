@@ -1,8 +1,15 @@
 import { useMutation } from "@apollo/client/react";
-import { CRIAR_TRANSACAO, CriarTransacaoResponse, CriarTransacaoVariables } from "@/graphql/mutations/transacoes";
+import {
+  CRIAR_TRANSACAO,
+  CriarTransacaoResponse,
+  CriarTransacaoVariables,
+} from "@/graphql/mutations/transacoes";
 
 export const useTransacoes = () => {
-  const [criarTransacaoMutation, { loading: creating, error: createError }] = useMutation<CriarTransacaoResponse, CriarTransacaoVariables>(CRIAR_TRANSACAO, {
+  const [criarTransacaoMutation, { loading: creating, error: createError }] = useMutation<
+    CriarTransacaoResponse,
+    CriarTransacaoVariables
+  >(CRIAR_TRANSACAO, {
     refetchQueries: ["GetTransacoes", "GetMetricas", "GetAnaliseExtrato", "GetSaidasPorCategoria"],
   });
 

@@ -1,52 +1,71 @@
 import { useMutation } from "@apollo/client/react";
-import { LOGIN_MUTATION, LoginResponse, LoginVariables, CRIAR_USUARIO_MUTATION, CriarUsuarioResponse, CriarUsuarioVariables } from "@/graphql/mutations/auth";
+import {
+  LOGIN_MUTATION,
+  LoginResponse,
+  LoginVariables,
+  CRIAR_USUARIO_MUTATION,
+  CriarUsuarioResponse,
+  CriarUsuarioVariables,
+} from "@/graphql/mutations/auth";
 import { useRouter } from "next/navigation";
+import { setSecureItem, removeSecureItem, setCookie, removeCookie } from "@/libs/utils/secure-store";
+import { currentUserVar } from "@/libs/apollo-client";
 
 export const useAuth = () => {
   const router = useRouter();
 
-  const [loginMutation, { loading, error }] = useMutation<LoginResponse, LoginVariables>(LOGIN_MUTATION, {
+  const [loginMutation, { loading: loginLoading, error: loginError }] = useMutation<
+    LoginResponse,
+    LoginVariables
+  >(LOGIN_MUTATION, {
     onCompleted: (data) => {
       if (typeof window !== "undefined") {
-        localStorage.setItem("token", data.login.token);
-        localStorage.setItem("user", JSON.stringify(data.login.usuario));
+        setSecureItem("token", data.login.token);
+        setSecureItem("user", data.login.usuario);
+        setCookie("token", data.login.token, 7); // Expira em 7 dias
+        currentUserVar(data.login.usuario); // Atualiza reativamente
       }
       router.push("/");
     },
   });
 
-  const [registerMutation, { loading: registerLoading, error: registerError }] = useMutation<CriarUsuarioResponse, CriarUsuarioVariables>(CRIAR_USUARIO_MUTATION, {
+  const [registerMutation, { loading: registerLoading, error: registerError }] = useMutation<
+    CriarUsuarioResponse,
+    CriarUsuarioVariables
+  >(CRIAR_USUARIO_MUTATION, {
     onCompleted: () => {
       router.push("/login");
     },
   });
 
-  const login = async (email: string, senha: string) => {
+  const login = async (email: string, password: string) => {
     return await loginMutation({
-      variables: { email, senha },
+      variables: { email, senha: password },
     });
   };
 
-  const registrar = async (nome: string, email: string, senha: string) => {
+  const register = async (name: string, email: string, password: string) => {
     return await registerMutation({
-      variables: { nome, email, senha },
+      variables: { nome: name, email, senha: password },
     });
   };
 
   const logout = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      removeSecureItem("token");
+      removeSecureItem("user");
+      removeCookie("token");
+      currentUserVar(null); // Limpa reativamente
     }
     router.push("/login");
   };
 
   return {
     login,
-    registrar,
+    register,
     logout,
-    loginLoading: loading,
-    loginError: error,
+    loginLoading,
+    loginError,
     registerLoading,
     registerError,
   };

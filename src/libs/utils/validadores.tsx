@@ -17,10 +17,6 @@ export const validarSenha = (senha: string): boolean => {
   const temCaractereEspecial = /[!@#$%^&*(),.?":{}|<>]/.test(senha);
 
   return (
-    temSeisDigitos &&
-    temLetraMinuscula &&
-    temLetraMaiuscula &&
-    temNumero &&
-    temCaractereEspecial
+    temSeisDigitos && temLetraMinuscula && temLetraMaiuscula && temNumero && temCaractereEspecial
   );
 };
