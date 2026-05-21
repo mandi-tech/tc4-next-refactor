@@ -22,7 +22,7 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <style dangerouslySetInnerHTML={{ __html: getDynamicThemeStyles() }} />
       </head>
-      <body className="h-full antialiased">
+      <body className="h-full antialiased bg-background">
         <AntdRegistry>
           <Providers>
             {children}

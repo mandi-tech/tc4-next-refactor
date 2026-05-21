@@ -1,3 +1,4 @@
+import { getSecureItem } from "./secure-store";
 import dayjs from "dayjs";
 
 export const parseValorNumerico = (valor: string | number): number => {
@@ -9,15 +10,7 @@ export const parseValorNumerico = (valor: string | number): number => {
 };
 
 export const getCurrentUser = () => {
-  if (typeof window === "undefined") return null;
-  const userStr = localStorage.getItem("user");
-  if (!userStr) return null;
-  try {
-    return JSON.parse(userStr);
-  } catch (err) {
-    console.error("Erro ao converter usuário do localStorage", err);
-    return null;
-  }
+  return getSecureItem("user");
 };
 
 export const formatarDataApi = (date: any): string => {

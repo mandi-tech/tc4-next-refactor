@@ -1,9 +1,17 @@
-import { ApolloClient, InMemoryCache, ApolloLink, CombinedGraphQLErrors } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloLink, CombinedGraphQLErrors, makeVar } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import { ErrorLink } from "@apollo/client/link/error";
 import { HttpLink } from "@apollo/client/link/http";
 import antdStatic from "./utils/antd-static";
 import { createHttpLink } from "@apollo/client";
+
+import { getSecureItem, removeSecureItem, removeCookie } from "./utils/secure-store";
+
+export const currentUserVar = makeVar<any>(
+  typeof window !== "undefined" ? getSecureItem("user") : null
+);
+
+export const transactionTriggerVar = makeVar<number>(0);
 
 const apiUri = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/graphql";
 
@@ -12,7 +20,7 @@ const httpLink = createHttpLink({
 });
 
 const authLink = new SetContextLink((prevContext) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const token = getSecureItem<string>("token");
   return {
     headers: {
       ...prevContext.headers,
@@ -26,8 +34,9 @@ const errorLink = new ErrorLink(({ error }) => {
     error.errors.forEach(({ message, locations, path }) => {
       if (message.includes("Sessão expirada") || message.includes("Não autorizado")) {
         if (typeof window !== "undefined") {
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
+          removeSecureItem("token");
+          removeSecureItem("user");
+          removeCookie("token");
           window.location.href = "/login";
         }
       }

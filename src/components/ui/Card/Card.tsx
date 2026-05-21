@@ -33,7 +33,7 @@ export default function Card({
   return (
     <div
       style={dynamicStyle}
-      className="gap-md p-lg flex flex-col rounded-xl border shadow-md transition-all duration-200"
+      className="border! border-border! bg-background-secondary! gap-md p-lg flex flex-col rounded-xl border shadow-md transition-all duration-200"
     >
       {icon && (
         <span className="px-xs py-xxs flex w-fit items-center justify-center rounded-md bg-current/10 text-2xl backdrop-blur-sm">
