@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Definição de páginas públicas (onde o usuário NÃO deve estar autenticado)
-  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/cadastro");
+  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/novo_usuario");
 
   // Se o usuário não estiver autenticado e tentar acessar uma rota protegida
   if (!token && !isAuthPage) {
