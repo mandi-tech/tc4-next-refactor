@@ -8,6 +8,8 @@ import {
   CriarUsuarioVariables,
 } from "@/graphql/mutations/auth";
 import { useRouter } from "next/navigation";
+import { setSecureItem, removeSecureItem, setCookie, removeCookie } from "@/libs/utils/secure-store";
+import { currentUserVar } from "@/libs/apollo-client";
 
 export const useAuth = () => {
   const router = useRouter();
@@ -18,8 +20,10 @@ export const useAuth = () => {
   >(LOGIN_MUTATION, {
     onCompleted: (data) => {
       if (typeof window !== "undefined") {
-        localStorage.setItem("token", data.login.token);
-        localStorage.setItem("user", JSON.stringify(data.login.usuario));
+        setSecureItem("token", data.login.token);
+        setSecureItem("user", data.login.usuario);
+        setCookie("token", data.login.token, 7); // Expira em 7 dias
+        currentUserVar(data.login.usuario); // Atualiza reativamente
       }
       router.push("/");
     },
@@ -48,8 +52,10 @@ export const useAuth = () => {
 
   const logout = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      removeSecureItem("token");
+      removeSecureItem("user");
+      removeCookie("token");
+      currentUserVar(null); // Limpa reativamente
     }
     router.push("/login");
   };
