@@ -69,14 +69,14 @@ export default function Filtros({ filtros = ["tipo", "categoria", "periodo"] }: 
             onClick={onRadioChange}
             className="w-[50%] md:w-[fit-content]"
           >
-            Entrada
+            Receitas
           </Radio.Button>
           <Radio.Button
             value="saida"
             onClick={onRadioChange}
             className="w-[50%] md:w-[fit-content]"
           >
-            Saída
+            Despesas
           </Radio.Button>
         </Radio.Group>
       )}

@@ -142,7 +142,7 @@ export function useExtrato() {
     deletarTransacao({ variables: { id } });
   };
 
-  const handleSaveTransacao = async (values: FormValues) => {
+const handleSaveTransacao = async (values: FormValues) => {
     const valorNumerico = parseValorNumerico(values.valor);
 
     if (isNaN(valorNumerico)) {
@@ -153,13 +153,31 @@ export function useExtrato() {
       return;
     }
 
-    let notaFiscalBase64 = undefined;
-    if (values.nota_fiscal && values.nota_fiscal.length > 0) {
-      const fileObj = values.nota_fiscal[0].originFileObj;
-      if (fileObj) {
-        notaFiscalBase64 = await getBase64(fileObj);
+    // Identifica se há algum item ou arquivo no array de nota fiscal do formulário
+    const temArquivoNoForm = values.nota_fiscal && values.nota_fiscal.length > 0;
+    
+    // Mudamos a tipagem local para aceitar null ou undefined temporariamente
+    let notaFiscalBase64: string | null | undefined = undefined;
+
+    if (transacaoSelecionada) {
+      // --- MODO EDIÇÃO ---
+      if (!temArquivoNoForm) {
+        notaFiscalBase64 = null; // O backend precisa de null para saber que deve deletar
       } else {
-        notaFiscalBase64 = values.nota_fiscal[0].name || values.nota_fiscal[0].url;
+        const fileObj = values.nota_fiscal![0].originFileObj;
+        if (fileObj) {
+          notaFiscalBase64 = await getBase64(fileObj);
+        } else {
+          notaFiscalBase64 = transacaoSelecionada.nota_fiscal || undefined;
+        }
+      }
+    } else {
+      // --- MODO CRIAÇÃO ---
+      if (temArquivoNoForm) {
+        const fileObj = values.nota_fiscal![0].originFileObj;
+        notaFiscalBase64 = fileObj ? await getBase64(fileObj) : undefined;
+      } else {
+        notaFiscalBase64 = undefined; // Para criação, se não tem, mandamos undefined (ignora o campo)
       }
     }
 
@@ -171,7 +189,6 @@ export function useExtrato() {
       valor: valorNumerico,
       categoria: values.categoria,
       data_agendamento: formatarDataApi(values.agendamento),
-      nota_fiscal: notaFiscalBase64,
     };
 
     if (transacaoSelecionada) {
@@ -179,6 +196,8 @@ export function useExtrato() {
         variables: {
           id: transacaoSelecionada.id,
           ...commonVariables,
+          // Se o seu EditarTransacaoVariables também reclamar de 'null', adicione um 'as any' aqui
+          nota_fiscal: notaFiscalBase64 as any, 
         },
       });
     } else {
@@ -187,6 +206,8 @@ export function useExtrato() {
           usuarioId,
           ...commonVariables,
           tipo: commonVariables.tipo || "ENTRADA",
+          // Garantimos que nunca será 'null' na criação, satisfazendo o tipo 'string | undefined'
+          nota_fiscal: notaFiscalBase64 ?? undefined, 
         },
       });
     }
