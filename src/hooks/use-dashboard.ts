@@ -15,12 +15,14 @@ import {
   TransacoesVariables,
 } from "@/graphql/queries/transacoes";
 import { getCurrentUser } from "@/libs/utils/transacoes_helper";
-import { useQuery } from "@apollo/client/react";
 import { ChartConfig } from "@/components/ui/Charts/types";
+import { transactionTriggerVar } from "@/libs/apollo-client";
+import { useQuery, useReactiveVar } from "@apollo/client/react";
 
 export function useDashboard() {
   const searchParams = useSearchParams();
   const [usuarioId, setUsuarioId] = useState<string>("");
+  const trigger = useReactiveVar(transactionTriggerVar);
 
   useEffect(() => {
     const user = getCurrentUser();
@@ -39,26 +41,26 @@ export function useDashboard() {
     [usuarioId, dataInicial, dataFinal],
   );
 
-  // 1. Query de Métricas (Cards superiores)
-  const { data: metricasData, loading: loadingMetricas } = useQuery<
+  // 1. Query de Métricas 
+  const { data: metricasData, loading: loadingMetricas, refetch: refetchMetricas } = useQuery<
     MetricasResponse,
     DashboardVariables
   >(GET_METRICAS, { variables: baseVariables, skip: !usuarioId });
 
-  // 2. Query do Gráfico de Evolução Composta
-  const { data: analiseData, loading: loadingAnalise } = useQuery<
+  // 2. Query do Gráfico de Transações
+  const { data: analiseData, loading: loadingAnalise, refetch: refetchAnalise } = useQuery<
     AnaliseExtratoResponse,
     DashboardVariables
   >(GET_ANALISE_EXTRATO, { variables: baseVariables, skip: !usuarioId });
 
-  // 3. Query do Gráfico de Rosca por Categorias
-  const { data: categoriasData, loading: loadingCategorias } = useQuery<
+  // 3. Query do Gráfico de Despesas por Categorias
+  const { data: categoriasData, loading: loadingCategorias, refetch: refetchCategorias } = useQuery<
     SaidasPorCategoriaResponse,
     DashboardVariables
   >(GET_SAIDAS_POR_CATEGORIA, { variables: baseVariables, skip: !usuarioId });
 
   // 4. Query das Últimas Transações
-  const { data: transacoesData, loading: loadingTransacoes } = useQuery<
+  const { data: transacoesData, loading: loadingTransacoes, refetch: refetchTransacoes } = useQuery<
     TransacoesResponse,
     TransacoesVariables
   >(GET_TRANSACOES, {
@@ -70,6 +72,16 @@ export function useDashboard() {
     },
     skip: !usuarioId,
   });
+
+  // Efeito reativo para escutar transações criadas/deletadas e atualizar o dashboard em tempo real
+  useEffect(() => {
+    if (trigger > 0 && usuarioId) {
+      refetchMetricas().catch(console.error);
+      refetchAnalise().catch(console.error);
+      refetchCategorias().catch(console.error);
+      refetchTransacoes().catch(console.error);
+    }
+  }, [trigger, usuarioId, refetchMetricas, refetchAnalise, refetchCategorias, refetchTransacoes]);
 
   // Mapeamento: Dados do Gráfico de Linhas/Barras
   const chartData = useMemo(() => {
@@ -83,7 +95,7 @@ export function useDashboard() {
     );
   }, [analiseData]);
 
-  // Mapeamento: Dados do Gráfico de Rosca
+  // Mapeamento: Dados do Gráfico de Donuts
   const donutData = useMemo(() => {
     return (
       categoriasData?.saidasPorCategoria.map((item) => ({

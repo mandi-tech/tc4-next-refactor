@@ -9,8 +9,27 @@ import Filtros from "@/components/features/filtros/filtros";
 import Card from "@/components/ui/Card/Card";
 import { colunasTransacao } from "@/libs/utils/tabela_transacao";
 import { useDashboard } from "@/hooks/use-dashboard";
-import ComposedChart from "@/components/ui/Charts/ComposedChart/ComposedChart";
-import DonutChart from "@/components/ui/Charts/DonutChart/DonutChart";
+import dynamic from "next/dynamic";
+
+const ComposedChart = dynamic(() => import("@/components/ui/Charts/ComposedChart/ComposedChart"), {
+  ssr: false,
+  loading: () => (
+    <div className="col-span-8 xl:col-span-5 border border-border bg-background-secondary rounded-xl p-lg h-[350px] flex flex-col justify-between animate-pulse">
+      <div className="h-6 bg-border rounded w-1/3 mb-4"></div>
+      <div className="h-[250px] bg-border/50 rounded w-full"></div>
+    </div>
+  ),
+});
+
+const DonutChart = dynamic(() => import("@/components/ui/Charts/DonutChart/DonutChart"), {
+  ssr: false,
+  loading: () => (
+    <div className="col-span-8 xl:col-span-3 border border-border bg-background-secondary rounded-xl p-lg h-[350px] flex flex-col justify-between animate-pulse">
+      <div className="h-6 bg-border rounded w-1/3 mb-4"></div>
+      <div className="h-[250px] bg-border/50 rounded w-full"></div>
+    </div>
+  ),
+});
 
 export default function Home() {
   const { metricas, chart, donut, transacoes, filtrosData } = useDashboard();
@@ -25,23 +44,20 @@ export default function Home() {
           icon={<BankOutlined />}
           description="Saldo Total"
           value={metricas.saldo}
-          backgroundColor="primary-muted"
           color="primary"
           loading={metricas.loading}
         />
         <Card
           icon={<RiseOutlined />}
-          description="Receita Mensal"
+          description="Receita Total"
           value={metricas.totalEntrada}
-          backgroundColor="success-muted"
           color="success"
           loading={metricas.loading}
         />
         <Card
           icon={<FallOutlined />}
-          description="Despesa Mensal"
+          description="Despesa Total"
           value={metricas.totalSaida}
-          backgroundColor="danger-muted"
           color="danger"
           loading={metricas.loading}
         />

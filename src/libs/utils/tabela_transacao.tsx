@@ -37,7 +37,7 @@ export const colunasTransacao = [
         currency: "BRL",
       }).format(item);
 
-      const corTexto = dados.tipo === "SAIDA" ? "text-vermelho" : "text-verde";
+      const corTexto = dados.tipo === "SAIDA" ? "text-red-500" : "text-green-500";
 
       return <p className={`font-bold ${corTexto}`}>{valorFormatado}</p>;
     },

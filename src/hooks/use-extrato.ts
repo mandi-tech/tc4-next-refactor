@@ -25,6 +25,7 @@ import {
   getBase64,
 } from "@/libs/utils/transacoes_helper";
 import { useMutation, useQuery } from "@apollo/client/react";
+import { transactionTriggerVar } from "@/libs/apollo-client";
 
 export interface FormValues {
   descricao: string;
@@ -92,7 +93,8 @@ export function useExtrato() {
     CriarTransacaoVariables
   >(CRIAR_TRANSACAO, {
     onCompleted: async () => {
-      notification.success({ message: "Transação criada com sucesso!" }); // Corrigido de 'title' para 'message' padrão do AntD
+      notification.success({ title: "Transação criada com sucesso!" }); 
+      transactionTriggerVar(Date.now()); 
       await refetch();
     },
   });
@@ -102,7 +104,8 @@ export function useExtrato() {
     EditarTransacaoVariables
   >(EDITAR_TRANSACAO, {
     onCompleted: () => {
-      notification.success({ message: "Transação atualizada com sucesso!" });
+      notification.success({ title: "Transação atualizada com sucesso!" });
+      transactionTriggerVar(Date.now());
       refetch();
     },
   });
@@ -111,13 +114,14 @@ export function useExtrato() {
     DELETAR_TRANSACAO,
     {
       onCompleted: () => {
-        notification.success({ message: "Transação deletada com sucesso!" });
+        notification.success({ title: "Transação deletada com sucesso!" });
+        transactionTriggerVar(Date.now()); 
         refetch();
       },
-
+ 
       onError: (error) => {
         notification.error({
-          message: "Erro ao deletar transação",
+          title: "Erro ao deletar transação",
           description: error.message,
         });
       },
@@ -143,7 +147,7 @@ export function useExtrato() {
 
     if (isNaN(valorNumerico)) {
       notification.error({
-        message: "Valor inválido",
+        title: "Valor inválido",
         description: "Por favor, insira um valor numérico válido.",
       });
       return;
